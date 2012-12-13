@@ -11,7 +11,7 @@ Usage
 First, start a dispatcher:
 ``python <path-to-fjd>/dispatcher.py``
 
-Them start one or more workers like this:
+Then, start one or more workers, like this:
 ``python <path-to-fjd>/worker.py``
 
 Now the dispatcher waits for jobs in the ``jobqueue`` directory (which it creates if 
@@ -32,13 +32,16 @@ general configuration file standard. Here is an example:
 
 Where you specify which command to execute and where results should go
 (note: if the path to the executable is relative, it should be relative to the worker,
- while the logfile should be relative to the job).
+ whereas the path to the logfile should be relative to the job).
 
-Your executable gets this configuration file passed as a command line parameters,
-so it can access in which logfile to write to and which parameters it needs
-to adhere to (only the ``[meta]`` - section is ``fjd``-specific, actually).
+Your executable gets this configuration file passed as a command line argument.
+This way, it can see for itself in which logfile to write to.
 
-You can see how that works by the simple example in the ``test`` directory.
+In addition, you can put other job-specific configuration in there for the exeuctable
+to see, as I did here in the ``[params]``-section (in fact, only the ``[meta]``-section
+is ``fjd``-specific).
 
-
+You can see how it all comes together by looking at the simple example in the ``test``
+directory where there is one script that represents a job and one that creates ten jobs
+and puts them in the queue.
 
