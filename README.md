@@ -30,7 +30,7 @@ which adheres to the general configuration file standard. Here is an example:
 Where you specify which command to execute and where results should go.
 Your executable gets this configuration file passed as a command line parameter,
 so it can access in which logfile to write to and which parameters it needs
-to adhere to (only the ``[meta]`` - section is ``pjd``-specific, actually).
+to adhere to (only the ``[meta]`` - section is ``fjd``-specific, actually).
 
 You can see how that works by the simple example in the ``test`` directory.
 
