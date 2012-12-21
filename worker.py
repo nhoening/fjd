@@ -29,8 +29,8 @@ class Worker(CoreProcess):
                 # A job is a config file
                 conf = ConfigParser() 
                 conf.read('jobpod/{}'.format(job))
-                exe = conf.get('meta', 'executable') 
-                log = conf.get('meta', 'logfile') 
+                exe = conf.get('control', 'executable') 
+                log = conf.get('control', 'logfile') 
                 # remove job from pod, execute task and re-announce myself
                 cmd = 'touch {log}; {exe} jobpod/{job}; rm jobpod/{job}; '\
                       'touch workerqueue/{id}.worker'.format(exe=exe, job=job,

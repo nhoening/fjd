@@ -13,7 +13,7 @@ if __name__ == '__main__':
     conf = ConfigParser()
     conf.read(sys.argv[1])
     time.sleep(random.randint(0, 5))
-    outfile = open(conf.get('meta', 'logfile'), 'w')
+    outfile = open(conf.get('control', 'logfile'), 'w')
     val = conf.get('params', 'param1')
     outfile.write('This was done with parameter param1:{val}.'.format(val=val))
     outfile.close()
