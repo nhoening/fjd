@@ -25,10 +25,10 @@ general configuration file standard. Here is an example:
 
     [control]
     executable: python test/ajob.py
-    logfile:data/job0.dat 
+    logfile: data/job0.dat 
 
     [params]
-    param1:value0
+    param1: value0
 
 Where you specify which command to execute and where results should go.
 
@@ -49,8 +49,9 @@ directory where there is one script that represents a job and one that creates t
 and puts them in the queue.
 
 To run this test, first navigate to the ``fjd`` directory. Then, start a dispatcher 
-and at least one worker and run a script that creates the jobqueue. finally, observe.
-Here are the commands, all issued in a different console window:
+and at least one worker and run a script that creates the jobqueue. Then, observe.
+Here are the commands - you should issue them all in their separate console window, as the first
+two are continuous services:
 
     $ python dispatcher.py
     $ python worker.py
