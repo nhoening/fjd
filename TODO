@@ -1,2 +1,3 @@
 * installable: enlist this packet on PyPI
 * test recruiter
+* recruiter needs to know location of fjd (or guess from its own location)

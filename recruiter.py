@@ -2,7 +2,6 @@
 # Start or terminate a bunch of workers on remote machines.
 # Use ssh (paramiko) to get there, start a screen (or kill it).
 # Should read in a config file like remote.conf for host/user names and number of workers 
-# This code can be inspired by deprecated Nicessa things, but it might be better to just use screenutils.
 
 import sys
 import os.path as osp
