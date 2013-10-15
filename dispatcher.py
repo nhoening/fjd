@@ -17,6 +17,8 @@ class Dispatcher(CoreProcess):
     def __init__(self, interval=5):
         self.start_up()
 
+        print("[FJD] Dispatcher started.")
+
         # prepare and clean
         for d in ('jobqueue', 'workerqueue', 'jobpod'):
             if not os.path.exists(d):

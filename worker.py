@@ -18,7 +18,7 @@ class Worker(CoreProcess):
 
         # announce my presence
         self.id = self.mk_id()
-        print('[Worker with ID {id} started.]'.format(id=self.id))
+        print('[FJD] Worker with ID {id} started.'.format(id=self.id))
         os.system('touch workerqueue/{id}.worker'.format(id=self.id))
 
         do_work = True
@@ -36,7 +36,7 @@ class Worker(CoreProcess):
                       'touch workerqueue/{id}.worker'.format(exe=exe, job=job,
                                                           log=log, id=self.id)
                 Popen(cmd, shell=True).wait()
-                print('Did my job ({})'.format(self.id))
+                print('[FJD] Worker {}: Finished my job.'.format(self.id))
             time.sleep(interval)
             do_work = not self.are_we_done()
 
