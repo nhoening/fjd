@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #TODO:
 # Start or terminate a bunch of workers on remote machines.
 # Use ssh (paramiko) to get there, start a screen (or kill it).
@@ -8,7 +10,7 @@ import os.path as osp
 from screenutils import list_screens, Screen
 from ConfigParser import ConfigParser
 
-from sshtools import mk_ssh_client, ssh
+from fjd.sshtools import mk_ssh_client, ssh
 
 
 class Recruiter(object):

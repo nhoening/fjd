@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os
 import time
 
-from core_process import CoreProcess
+from fjd.core_process import CoreProcess
 
 
 class Dispatcher(CoreProcess):
