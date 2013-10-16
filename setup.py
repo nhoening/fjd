@@ -37,7 +37,7 @@ class PyTest(TestCommand):
 setup(
     name='fjd',
     version=fjd.__version__,
-    url='http://github.com/jeffknupp/sandman/',
+    url='http://github.com/nhoening/fjd/',
     license='Apache Software License',
     author='Nicolas Höning',
     tests_require=['pytest'],
@@ -66,6 +66,6 @@ setup(
     extras_require={
         'testing': ['pytest'],
     },
-    scripts = ['fjd/dispatcher.py', 'fjd/recruiter.py']
+    scripts = ['fjd/dispatcher.py', 'fjd/worker.py', 'fjd/recruiter.py', 'fjd/bgscreen']
 )
 

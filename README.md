@@ -4,20 +4,26 @@ fjd
 File-based job distribution. A straightforward pull-model for computational tasks,
 working with the assumption that all CPUs/cores can access a shared home directory.
 
+Installation
+-------------
+pip install fjd
+
 
 Usage
 -------
 
-First, start a dispatcher:
-``python <path-to-fjd>/dispatcher.py``
+Start one or more workers, like this:
+    recruiter.py hire <number of workers>
 
-Then, start one or more workers, like this:
-``python <path-to-fjd>/worker.py``
+These will sit in Unix screen sessions and wait for job assignments.
 
-Now the dispatcher waits for jobs in the ``jobqueue`` directory (which it creates if 
-it does not yet exist).
+Then, start a dispatcher:
+    dispatcher.py
+
+Now the dispatcher waits for jobs in the ``jobqueue`` directory.
 Workers announce themselves in the ``workerqueue`` directory, where the dispatcher will
 find them.
+(These working directories will be created if they do not yet exist.)
 
 All you have to do now is to put jobs in the queue. You do this by putting
 a file per job in the ``jobqueue`` directory. The file should adhere to the
@@ -44,15 +50,35 @@ In addition, you can put other job-specific configuration in there for the execu
 to see, as I did here in the ``[params]``-section (in fact, only the ``[control]``-section
 is ``fjd``-specific).
 
-You can see how it all comes together by looking at the simple example in the ``test``
+You can see how it all comes together by looking at the simple example in the ``example``
 directory where there is one script that represents a job and one that creates ten jobs
 and puts them in the queue.
 
-To run this test, first navigate to the ``fjd`` directory. Then, start a dispatcher 
-and at least one worker and run a script that creates the jobqueue. Then, observe.
-Here are the commands - you should issue them all in their separate console window, as the first
-two are continuous services:
+To run this example, recruit some workers and start a dispatcher. Then, run 
+a script that creates the jobqueue. Finally, observe.
 
-    $ python dispatcher.py
-    $ python worker.py
-    $ python test/create_jobs.py
+Here are the commands:
+
+    $ cd example
+    $ python create_jobs.py
+    $ recruiter.py hire 4  # assuming you have four cores and want to use all of them
+    > [FJD] Hired 4 workers on localhost.
+    $ dispatcher.py
+    > [FJD] Dispatcher started.
+    > Found some jobs to dispatch
+    > Found some jobs to dispatch
+    > Found some jobs to dispatch
+
+It does not matter in which order you do these three things - create jobs, hire workers and dispatch.
+The workers patiently wait for jobs and the dispatcher waits for jobs.
+
+When jobs are done (the dispatcher will not find new ones quickly), you can "fire" the workers:
+
+    $ recruiter.py fire
+
+And you'll see the results, the log files written by our example jobs:
+
+    $ ls data/
+    job0.dat	job2.dat	job4.dat	job6.dat	job8.dat
+    job1.dat	job3.dat	job5.dat	job7.dat	job9.dat
+

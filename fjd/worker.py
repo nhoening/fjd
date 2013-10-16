@@ -5,7 +5,7 @@ import time
 from ConfigParser import ConfigParser
 from subprocess import Popen
 
-from core_process import CoreProcess
+from fjd.core_process import CoreProcess
 
 
 class Worker(CoreProcess):

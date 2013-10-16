@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os
 
@@ -6,6 +6,8 @@ if __name__ == '__main__':
 
     if not os.path.exists('data'):
         os.mkdir('data')
+    if not os.path.exists('jobqueue'):
+        os.mkdir('jobqueue')
 
     for i in range(10):
         jobconf = '''[control]

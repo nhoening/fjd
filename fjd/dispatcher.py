@@ -19,13 +19,6 @@ class Dispatcher(CoreProcess):
 
         print("[FJD] Dispatcher started.")
 
-        # prepare and clean
-        for d in ('jobqueue', 'workerqueue', 'jobpod'):
-            if not os.path.exists(d):
-                os.mkdir(d)
-            for f in os.listdir(d):
-                os.remove('{d}/{f}'.format(d=d, f=f))
-
         do_work = True
         while do_work:
             jq = os.listdir('jobqueue')
