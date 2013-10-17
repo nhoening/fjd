@@ -33,8 +33,8 @@ a file per job in the ``jobqueue`` directory. The file should adhere to the
 general configuration file standard. Here is an example::
 
     [control]
-    executable: python test/ajob.py
-    logfile: data/job0.dat 
+    executable: python example/ajob.py
+    logfile: logfiles/job0.dat 
 
     [params]
     param1: value0
@@ -53,13 +53,17 @@ In addition, you can put other job-specific configuration in there for the execu
 to see, as I did here in the ``[params]``-section (in fact, only the ``[control]``-section
 is ``fjd``-specific).
 
+
+An example
+------------
+
 You can see how it all comes together by looking at the simple example in the ``example``
 directory where there is one script that represents a job and one that creates ten jobs
-and puts them in the queue.
+similar to the one we saw above and puts them in the queue.
 
-To run this example, run a script that creates the jobqueue. Recruit some workers
- and start a dispatcher. Then, lean back and observe. We have a script that does
-all of this in `run-example.sh´::
+To run this example, run a script that creates the jobqueue. Recruit some workers 
+and start a dispatcher. Then, lean back and observe. We have a script that does
+all of this in ``run-example.sh``::
 
     #/bin/bash
 
@@ -82,13 +86,13 @@ It does not matter in which order you do these three things - create jobs, hire 
 The workers patiently wait for jobs and the dispatcher waits for workers.
 
 When all jobs are done (the dispatcher in the examnple quit because there were
-none left), you can "fire" the workers::
+none left), you can "fire" the workers (i.e. kill the Unix screen sessions)::
 
     $ recruiter.py fire
 
 And you'll see the results, the log files written by our example jobs::
 
-    $ ls data/
+    $ ls logfiles/
     job0.dat	job2.dat	job4.dat	job6.dat	job8.dat
     job1.dat	job3.dat	job5.dat	job7.dat	job9.dat
 

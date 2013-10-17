@@ -3,6 +3,4 @@ TODO:
 
   * test recruiter on remote machines
   * specify a custom group identifier for worker and dispatcher
-  * specify a custom working directory
-  * ability for dispatcher to stop once the jobqueue is empty
   * unit tests
