@@ -6,19 +6,22 @@ working with the assumption that all CPUs/cores can access a shared home directo
 
 Installation
 -------------
-pip install fjd
+
+    $ pip install fjd
 
 
 Usage
 -------
 
-Start one or more workers, like this:
-    recruiter.py hire <number of workers>
+Start one or more workers, like this::
+
+    $ recruiter.py hire <number of workers>
 
 These will sit in Unix screen sessions and wait for job assignments.
 
-Then, start a dispatcher:
-    dispatcher.py
+Then, start a dispatcher::
+
+    $ dispatcher.py
 
 Now the dispatcher waits for jobs in the ``jobqueue`` directory.
 Workers announce themselves in the ``workerqueue`` directory, where the dispatcher will
@@ -27,7 +30,7 @@ find them.
 
 All you have to do now is to put jobs in the queue. You do this by putting
 a file per job in the ``jobqueue`` directory. The file should adhere to the
-general configuration file standard. Here is an example:
+general configuration file standard. Here is an example::
 
     [control]
     executable: python test/ajob.py
@@ -57,7 +60,7 @@ and puts them in the queue.
 To run this example, recruit some workers and start a dispatcher. Then, run 
 a script that creates the jobqueue. Finally, observe.
 
-Here are the commands:
+Here are the commands::
 
     $ cd example
     $ python create_jobs.py
@@ -72,11 +75,11 @@ Here are the commands:
 It does not matter in which order you do these three things - create jobs, hire workers and dispatch.
 The workers patiently wait for jobs and the dispatcher waits for jobs.
 
-When jobs are done (the dispatcher will not find new ones quickly), you can "fire" the workers:
+When jobs are done (the dispatcher will not find new ones quickly), you can "fire" the workers::
 
     $ recruiter.py fire
 
-And you'll see the results, the log files written by our example jobs:
+And you'll see the results, the log files written by our example jobs::
 
     $ ls data/
     job0.dat	job2.dat	job4.dat	job6.dat	job8.dat
