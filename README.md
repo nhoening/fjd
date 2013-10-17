@@ -57,25 +57,32 @@ You can see how it all comes together by looking at the simple example in the ``
 directory where there is one script that represents a job and one that creates ten jobs
 and puts them in the queue.
 
-To run this example, recruit some workers and start a dispatcher. Then, run 
-a script that creates the jobqueue. Finally, observe.
+To run this example, run a script that creates the jobqueue. Recruit some workers
+ and start a dispatcher. Then, lean back and observe. We have a script that does
+all of this in `run-example.sh´::
 
-Here are the commands::
+    #/bin/bash
+
+    python create_jobs.py
+    recruiter.py hire 4
+    dispatcher.py
+
+And this is the output you should see::
 
     $ cd example
-    $ python create_jobs.py
-    $ recruiter.py hire 4  # assuming you have four cores and want to use all of them
-    > [FJD] Hired 4 workers on localhost.
-    $ dispatcher.py
-    > [FJD] Dispatcher started.
-    > Found some jobs to dispatch
-    > Found some jobs to dispatch
-    > Found some jobs to dispatch
+    $ ./run-example.sh 
+    [FJD] Hired 4 workers on localhost.
+    [FJD] Dispatcher started.
+    [FJD] Found some jobs to dispatch
+    [FJD] Found some jobs to dispatch
+    [FJD] Found some jobs to dispatch
+    [FJD] No more jobs to dispatch.
 
 It does not matter in which order you do these three things - create jobs, hire workers and dispatch.
-The workers patiently wait for jobs and the dispatcher waits for jobs.
+The workers patiently wait for jobs and the dispatcher waits for workers.
 
-When jobs are done (the dispatcher will not find new ones quickly), you can "fire" the workers::
+When all jobs are done (the dispatcher in the examnple quit because there were
+none left), you can "fire" the workers::
 
     $ recruiter.py fire
 

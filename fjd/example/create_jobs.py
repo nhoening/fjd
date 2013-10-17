@@ -4,18 +4,17 @@ import os
 
 if __name__ == '__main__':
 
-    if not os.path.exists('data'):
-        os.mkdir('data')
-    if not os.path.exists('jobqueue'):
-        os.mkdir('jobqueue')
+    for d in ('logfiles', '.fjd', '.fjd/jobqueue'):
+        if not os.path.exists(d):
+            os.mkdir(d)
 
     for i in range(10):
         jobconf = '''[control]
 executable: python test/ajob.py
-logfile:data/job{i}.dat 
+logfile: logfiles/job{i}.dat 
 
 [params]
 param1:value{i}'''.format(i=i)    
-        f = open('jobqueue/{i}.conf'.format(i=i), 'w')
+        f = open('.fjd/jobqueue/{i}.conf'.format(i=i), 'w')
         f.write(jobconf)
         f.close() 
