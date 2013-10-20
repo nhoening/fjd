@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import os
 import os.path as osp
 from screenutils import list_screens #, Screen
@@ -11,9 +10,9 @@ from fjd.sshtools import mk_ssh_client, ssh
 
 class Recruiter(object):
 
-    def __init__(self, num_workers=1, wdir='.fjd', remote_conf_location=None,
+    def __init__(self, num_workers=1, wdir='~/.fjd', remote_conf_location=None,
                  group='fdj-worker'):
-        self.wdir = wdir
+        self.wdir = osp.expanduser(wdir)
         self.group = group
 
         self.hosts = [dict(name='localhost', workers=int(num_workers))]
@@ -46,13 +45,13 @@ class Recruiter(object):
                     #s = Screen(sid, True)
                     #s.send_commands('bash')
                     #s.send_commands('python fjd/worker.py')
-                    os.system('bgscreen {} "worker.py {}"'.format(sid, self.wdir))
+                    os.system('bgscreen {} "fjd-worker {}"'.format(sid, self.wdir))
                 print('[FJD] Hired {} workers on {}.'.format(host['workers'],
                                                              host['name']))
             else:
                 # for remote hosts, call the recruiter locally
                 ssh_client = mk_ssh_client(host['name'], host['username'])
-                ssh(ssh_client, 'recruiter.py hire {}'\
+                ssh(ssh_client, 'fjd-recruiter hire {}'\
                                  .format(host['workers'])) 
 
     def fire(self):
@@ -67,31 +66,14 @@ class Recruiter(object):
                     s.kill()
                     fired += 1
                 if fired > 0:
+                    for f in os.listdir('{}/workerqueue'.format(self.wdir)):
+                        os.remove('{}/workerqueue/{}'.format(self.wdir, f))
                     print('[FJD] Fired {} workers on {}.'.format(fired,
                                                                  host['name']))
             else:
                 # for remote hosts, call the recruiter locally
                 ssh_client = mk_ssh_client(host['name'], host['username'])
-                ssh(ssh_client, 'recruiter.py fire') 
+                ssh(ssh_client, 'fjd-recruiter fire') 
 
 
-if __name__ == '__main__':
-    '''
-    Start some workers on this PC
-    ''' 
-    a = sys.argv
-    if not((len(a) in (3, 4) and a[1] == "hire")\
-           or (len(a) in (2, 3) and a[1] == "fire")):
-        print("[FJD] usage: python recruiter.py {hire <num_workers>, fire} [working directory]")
-        sys.exit(2)
-    wdir = '.fjd'
-    if a[1] == 'hire':
-        if len(sys.argv) == 4:
-            wdir = sys.argv[3]
-        recruiter = Recruiter(num_workers = int(a[2]), wdir=wdir)
-        recruiter.hire()
-    elif a[1] == 'fire':
-        if len(sys.argv) == 3:
-            wdir = sys.argv[2]
-        recruiter = Recruiter(wdir=wdir)
-        recruiter.fire()
+

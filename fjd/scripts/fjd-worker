@@ -1,0 +1,11 @@
+#!/usr/bin/python
+
+import sys
+from fjd import Worker
+
+
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        Worker()
+    else:
+        Worker(wdir=sys.argv[1])

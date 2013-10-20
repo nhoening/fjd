@@ -2,12 +2,8 @@ TODO:
 ----------
 
   * Test recruiter on remote machines
-  * Working directory is always ~/.fjd. Give workers and dispatcher a <project>
-    name and work will be done in ~/.fjd/project. Screen names will also be 
-    identified with it.
-  * remote.conf can be passed to recruiter.py but it can also be placed in ~/.fjd
-  * Scripts should be renamed with "fjd-" in front and maybe without ".py"
-    Or we add three scripts with those names that simply import * from <>.py
-    and include the __main__ part? Then we could actually have a "src" (or 
-    "classes") and a "scripts" directory ...
+  * use argparse module for scripts
+  * Give workers and dispatcher a <project> name and work will be done in 
+    ~/.fjd/<project>. Screen names will also be identified with it (replaces group).
+  * remote.conf should be placed in ~/.fjd/<project>
   * Unit tests

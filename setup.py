@@ -66,6 +66,7 @@ setup(
     extras_require={
         'testing': ['pytest'],
     },
-    scripts = ['fjd/dispatcher.py', 'fjd/worker.py', 'fjd/recruiter.py', 'fjd/bgscreen']
+    scripts = ['fjd/scripts/fjd-dispatcher', 'fjd/scripts/fjd-worker',
+              'fjd/scripts/fjd-recruiter', 'fjd/scripts/bgscreen']
 )
 

@@ -13,24 +13,33 @@ Installation
 Usage
 -------
 
-Start one or more workers, like this::
+  * Start one or more workers, like this::
 
-    $ recruiter.py hire <number of workers>
+    $ fjd-recruiter hire <number of workers>
 
-These will sit in Unix screen sessions and wait for job assignments.
 
-Then, start a dispatcher::
+  * Put jobs in the queue. You do this by putting a file per job in the ``jobqueue``directory. I'll talk about the details of thesejob files in a minute. 
 
-    $ dispatcher.py
+  * Then, start a dispatcher::
 
-Now the dispatcher waits for jobs in the ``jobqueue`` directory.
-Workers announce themselves in the ``workerqueue`` directory, where the dispatcher will
-find them.
-(These working directories will be created if they do not yet exist.)
+    $ fjd-dispatcher
 
-All you have to do now is to put jobs in the queue. You do this by putting
-a file per job in the ``jobqueue`` directory. The file should adhere to the
-general configuration file standard. Here is an example::
+Now the dispatcher assigns jobs to workers until all jobs are done.
+
+A little bit more detailled: The dispacther finds jobs in the ``jobqueue`` directory.
+Workers announce themselves in the ``workerqueue`` directory. The dispatcher 
+pairs a job with a worker, removes those entries from ``jobqueue``
+and ``workerqueue`` and creates a new entry in ``jobpods``, where workers will
+pick up their assignments.
+Of course, these working directories will be created if they do not yet exist.
+
+
+Job files
+------------
+
+A job file should adhere to the general configuration file standard, where fjd
+only has some requirements for the ``control`` section, where you specify which
+command to execute and where results should go. Here is an example::
 
     [control]
     executable: python example/ajob.py
@@ -39,7 +48,6 @@ general configuration file standard. Here is an example::
     [params]
     param1: value0
 
-Where you specify which command to execute and where results should go.
 
 Your executable (the "job") gets this configuration file passed as a command line argument.
 This way, it can see for itself in which logfile to write to.
@@ -54,41 +62,40 @@ to see, as I did here in the ``[params]``-section (in fact, only the ``[control]
 is ``fjd``-specific).
 
 
-An example
-------------
+An example (on your local machine)
+---------------------------------
 
 You can see how it all comes together by looking at the simple example in the ``example``
 directory where there is one script that represents a job and one that creates ten jobs
 similar to the one we saw above and puts them in the queue.
 
-To run this example, run a script that creates the jobqueue. Recruit some workers 
+To run this example, create jobs using the script, recruit some workers 
 and start a dispatcher. Then, lean back and observe. We have a script that does
 all of this in ``run-example.sh``::
 
     #/bin/bash
 
     python create_jobs.py
-    recruiter.py hire 4
-    dispatcher.py
+    fjd-recruiter hire 4
+    fjd-dispatcher
 
 And this is the output you should see::
 
-    $ cd example
+    $ cd fjd/example
     $ ./run-example.sh 
     [FJD] Hired 4 workers on localhost.
     [FJD] Dispatcher started.
-    [FJD] Found some jobs to dispatch
-    [FJD] Found some jobs to dispatch
-    [FJD] Found some jobs to dispatch
-    [FJD] No more jobs to dispatch.
+    [FJD] Found 10 jobs and 4 workers. Dispatching ...
+    [FJD] Found 6 jobs and 4 workers. Dispatching ...
+    [FJD] Found 2 jobs and 4 workers. Dispatching ...
+    [FJD] No (more) jobs to dispatch.
+    [FJD] Fired 4 workers on localhost.
 
-It does not matter in which order you do these three things - create jobs, hire workers and dispatch.
-The workers patiently wait for jobs and the dispatcher waits for workers.
 
-When all jobs are done (the dispatcher in the examnple quit because there were
-none left), you can "fire" the workers (i.e. kill the Unix screen sessions)::
-
-    $ recruiter.py fire
+Note that the Dispatcher is started after jobs are created because per default, 
+it will fire workers and terminate itself once it finds the queue of jobs being empty.
+This behaviour can be overwritten with a parameter if needed and then you could 
+have the dispacther running and push jobs in the queue whenever you like.
 
 And you'll see the results, the log files written by our example jobs::
 
@@ -96,3 +103,15 @@ And you'll see the results, the log files written by our example jobs::
     job0.dat	job2.dat	job4.dat	job6.dat	job8.dat
     job1.dat	job3.dat	job5.dat	job7.dat	job9.dat
 
+Workers are Unix screen sessions, you can see them by typing
+
+    $ screen -ls
+
+and inspect them if you want. By the way, you can always fire workers by hand:
+
+    $ fjd-recruiter fire
+
+
+An example (using several machines in your network)
+-----------------------------------------------------
+TODO

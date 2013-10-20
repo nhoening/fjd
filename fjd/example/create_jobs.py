@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 import os
+import os.path as osp
 
 if __name__ == '__main__':
 
-    for d in ('logfiles', '.fjd', '.fjd/jobqueue'):
+    wdir = osp.expanduser('~/.fjd')
+    for d in ('logfiles', wdir, '{wdir}/jobqueue'.format(wdir=wdir)):
         if not os.path.exists(d):
             os.mkdir(d)
 
@@ -15,6 +17,6 @@ logfile: logfiles/job{i}.dat
 
 [params]
 param1:value{i}'''.format(i=i)    
-        f = open('.fjd/jobqueue/{i}.conf'.format(i=i), 'w')
+        f = open('{wdir}/jobqueue/{i}.conf'.format(wdir=wdir, i=i), 'w')
         f.write(jobconf)
         f.close() 
