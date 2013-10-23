@@ -1,9 +1,7 @@
-TODO:
-----------
+TODO
+==========
 
+  * get package to be installable wth pip install
   * Test recruiter on remote machines
-  * use argparse module for scripts
-  * Give workers and dispatcher a <project> name and work will be done in 
-    ~/.fjd/<project>. Screen names will also be identified with it (replaces group).
   * remote.conf should be placed in ~/.fjd/<project>
   * Unit tests
