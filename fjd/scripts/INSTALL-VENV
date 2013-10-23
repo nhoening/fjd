@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Installing to a virtual environment
+# Every time you run fjd, you need to activate this virtual env beforehand:
+# $ source ~/.fjd/.venv/bin/activate
+
+curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py
+python virtualenv.py ~/.fjd/.venv
+wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | ~/.fjd/.venv/bin/python2.7
+curl --silent --show-error --retry 5 https://raw.github.com/pypa/pip/master/contrib/get-pip.py |  ~/.fjd/.venv/bin/python2.7
+pip install fjd

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# A script to install fjd locally, assuming limited privileges.
+# This should be added to ~/.bashrc or the like:
+# export PATH=~/.local/bin:$PATH
+ 
+wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+python ez_setup.py --user
+rm ez_setup.py
+export PATH=~/.local/bin:$PATH
+easy_install --user pip
+pip install fjd --user
