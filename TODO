@@ -1,7 +1,0 @@
-TODO
-==========
-
-  * get package to be installable wth pip install
-  * Test recruiter on remote machines
-  * remote.conf should be placed in ~/.fjd/<project>
-  * Unit tests
