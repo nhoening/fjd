@@ -17,8 +17,7 @@ Usage
 
     $ fjd-recruiter hire <number of workers>
 
-
-  * Put jobs in the queue. You do this by putting a file per job in the ``jobqueue``directory. I'll talk about the details of thesejob files in a minute. 
+  * Put jobs in the queue. You do this by putting a file per job in the ``jobqueue`` directory. I'll talk about the details of thesejob files in a minute. 
 
   * Then, start a dispatcher::
 
@@ -63,13 +62,14 @@ is ``fjd``-specific).
 
 
 An example (on your local machine)
----------------------------------
+------------------------------------
 
 You can see how it all comes together by looking at the simple example in the ``example``
-directory where there is one script that represents a job and one that creates ten jobs
-similar to the one we saw above and puts them in the queue.
+directory where there is one script that represents a job (``example/ajob.py``) 
+and one that creates ten jobs similar to the one we saw above and puts them in
+the queue (``example/create_jobs.py``).
 
-To run this example, create jobs using the script, recruit some workers 
+To run this example, create jobs using the second script, recruit some workers 
 and start a dispatcher. Then, lean back and observe. We have a script that does
 all of this in ``run-example.sh``::
 
@@ -79,23 +79,27 @@ all of this in ``run-example.sh``::
     fjd-recruiter hire 4
     fjd-dispatcher
 
-And this is the output you should see::
+And this is output similar to what you should see::
 
     $ cd fjd/example
     $ ./run-example.sh 
-    [FJD] Hired 4 workers on localhost.
-    [FJD] Dispatcher started.
+    [FJD] No workers busy in project "default" on localhost.
+    [FJD] Hired 4 workers in project "default" on localhost.
+    [FJD] Dispatcher started on project "default"
     [FJD] Found 10 jobs and 4 workers. Dispatching ...
-    [FJD] Found 6 jobs and 4 workers. Dispatching ...
-    [FJD] Found 2 jobs and 4 workers. Dispatching ...
+    [FJD] Found 6 jobs and 1 workers. Dispatching ...
+    [FJD] Found 5 jobs and 3 workers. Dispatching ...
+    [FJD] Found 2 jobs and 1 workers. Dispatching ...
+    [FJD] Found 1 jobs and 1 workers. Dispatching ...
     [FJD] No (more) jobs to dispatch.
-    [FJD] Fired 4 workers on localhost.
+    [FJD] Fired 4 workers in project "default" on localhost.
 
 
 Note that the Dispatcher is started after jobs are created because per default, 
-it will fire workers and terminate itself once it finds the queue of jobs being empty.
-This behaviour can be overwritten with a parameter if needed and then you could 
-have the dispacther running and push jobs in the queue whenever you like.
+it will fire workers (kill screen sessions) and terminate itself once it finds 
+the queue of jobs being empty. This behaviour can be overwritten with a parameter
+if needed and then you could have the dispacther running and push jobs in the 
+queue whenever you like.
 
 And you'll see the results, the log files written by our example jobs::
 
@@ -110,6 +114,15 @@ Workers are Unix screen sessions, you can see them by typing
 and inspect them if you want. By the way, you can always fire workers by hand:
 
     $ fjd-recruiter fire
+
+Here is the log from a screen session of a worker if you're interested::
+
+    $ fjd-worker --project default
+    [FJD] Worker with ID nics-macbook.fritz.box_1382522062.31 started.
+    [FJD] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
+    [FJD] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
+    [FJD] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
+    [FJD] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
 
 
 An example (using several machines in your network)

@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 
 import os
-import os.path as osp
 
 if __name__ == '__main__':
-
-    wdir = osp.expanduser('~/.fjd')
-    for d in ('logfiles', wdir, '{wdir}/jobqueue'.format(wdir=wdir)):
+    fjd_dir = os.path.expanduser('~/.fjd')
+    for d in ('logfiles', fjd_dir, '{}/default'.format(fjd_dir),
+              '{}/default/jobqueue'.format(fjd_dir)):
         if not os.path.exists(d):
             os.mkdir(d)
 
     for i in range(10):
         jobconf = '''[control]
-executable: python test/ajob.py
+executable: python ajob.py
 logfile: logfiles/job{i}.dat 
 
 [params]
 param1:value{i}'''.format(i=i)    
-        f = open('{wdir}/jobqueue/{i}.conf'.format(wdir=wdir, i=i), 'w')
+        f = open('{}/default/jobqueue/{i}.conf'.format(fjd_dir, i=i), 'w')
         f.write(jobconf)
         f.close() 

@@ -1,11 +1,19 @@
 #!/usr/bin/python
 
 import sys
+import argparse
 from fjd import Dispatcher
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        Dispatcher()
-    else:
-        Dispatcher(wdir=sys.argv[1])
+    parser = argparse.ArgumentParser(description='Start a worker process.')
+    parser.add_argument('--interval', type=int, default=5,
+                        help="How often to poll for jobs and workers.")
+    parser.add_argument('--end_on_empty_queue', type=bool, default=True,
+                    help="If True, the dispatcher stops if no jobs are queued.")
+    parser.add_argument('--project', type=str, help="Custom identifier (useful"\
+                                  " when fjd is used to run several projects).")
+    args = parser.parse_args()
+    Dispatcher(project=args.project, interval=args.interval,
+               end_on_empty_queue=args.end_on_empty_queue)
+

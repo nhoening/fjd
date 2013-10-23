@@ -5,6 +5,7 @@ import time
 
 from fjd import CoreProcess
 from fjd import Recruiter
+from fjd.utils import ensure_wdir
 
 
 class Dispatcher(CoreProcess):
@@ -15,10 +16,13 @@ class Dispatcher(CoreProcess):
     to workers by moving jobs to the `jobpod` directory. 
     '''
 
-    def __init__(self, interval=5, wdir='~/.fjd', end_on_empty_queue=True):
-        self.start_up(wdir=wdir)
+    def __init__(self, interval=5, project=None, end_on_empty_queue=True):
+        if not project:
+            project = 'default'
+        self.wdir = ensure_wdir(project)
+        self.start_up()
 
-        print("[FJD] Dispatcher started.")
+        print('[FJD] Dispatcher started on project "{}"'.format(project))
 
         do_work = True
         while do_work:
@@ -36,7 +40,7 @@ class Dispatcher(CoreProcess):
                     os.remove('{wdir}/workerqueue/{w}'.format(wdir=self.wdir, w=worker))
             elif end_on_empty_queue:
                 print("[FJD] No (more) jobs to dispatch.")
-                Recruiter().fire()
+                Recruiter(project=project).fire()
                 do_work = False
             # TODO: maybe update a little stats file about work done so far
             #       and also who is currently busy? 
