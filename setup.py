@@ -3,25 +3,27 @@
 from __future__ import print_function
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
-import io
 import codecs
 import os
 import sys
+import re
 
-import fjd 
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-def read(*filenames, **kwargs):
-    encoding = kwargs.get('encoding', 'utf-8')
-    sep = kwargs.get('sep', '\n')
-    buf = []
-    for filename in filenames:
-        with io.open(filename, encoding=encoding) as f:
-            buf.append(f.read())
-    return sep.join(buf)
+def read(*parts):
+    # intentionally *not* adding an encoding option to open
+    return codecs.open(os.path.join(here, *parts), 'r').read()
 
-long_description = read('README.md', 'CHANGES.txt', 'TODO')
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
+
+long_description = read('README.md') + read('CHANGES.txt') + read('TODO')
 
 class PyTest(TestCommand):
     def finalize_options(self):
@@ -36,13 +38,12 @@ class PyTest(TestCommand):
 
 setup(
     name='fjd',
-    version=fjd.__version__,
+    version=find_version('fjd', '__init__.py'),
     url='http://github.com/nhoening/fjd/',
     license='Apache Software License',
     author='Nicolas Höning',
     tests_require=['pytest'],
     install_requires=['screenutils>=0.0.1.5.4', 'paramiko>=1.7.7.1'],
-
     cmdclass={'test': PyTest},
     author_email='iam@nicolashoening.de',
     description='File-based job distribution for everyone',
