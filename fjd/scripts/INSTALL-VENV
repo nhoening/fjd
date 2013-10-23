@@ -3,6 +3,7 @@
 # Installing to a virtual environment
 # Every time you run fjd, you need to activate this virtual env beforehand:
 # $ source ~/.fjd/.venv/bin/activate
+# We'd have to let the recruiter do this first thing when he opens up a screen session ... 
 
 curl -O https://raw.github.com/pypa/virtualenv/master/virtualenv.py
 python virtualenv.py ~/.fjd/.venv
