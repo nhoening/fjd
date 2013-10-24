@@ -3,7 +3,7 @@
 # A script to install fjd locally, assuming limited privileges.
 # Call it like this:
 # $ source INSTALL
-# To always have fjd commands available, this should be added your ~/.bashrc 
+# To always have fjd commands available, this should be added to your ~/.bashrc 
 # or .profile file:
 # export PATH=~/.local/bin:$PATH
  

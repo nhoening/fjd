@@ -7,7 +7,23 @@ working with the assumption that all CPUs/cores can access a shared home directo
 Installation
 -------------
 
+*Short answer*::
+    
     $ pip install fjd
+
+
+*Long answer*: If you don't have pip installed (I can't wait for everyone running Python 3.4), or if you don't have sufficient privileges to install with it, try this first::
+    
+    $ easy_install pip
+    
+*Final answer*: If you also don't have easy_install (or the privileges), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_. which should help to install all needed things and install it only in your local home directory, so root privileges are not necessary. Download and execute it::
+    
+    $ chmmod +x INSTALL
+    $ source INSTALL
+    
+Then, to always have fjd commands available in later sessions, this should be added to your ``~/.bashrc`` or ``.profile`` file::
+
+    export PATH=~/.local/bin:$PATH
 
 
 Usage
@@ -25,7 +41,7 @@ Usage
 
 Now the dispatcher assigns jobs to workers until all jobs are done.
 
-A little bit more detailled: The dispacther finds jobs in the ``jobqueue`` directory.
+A little bit more detailled: The dispatcher finds jobs in the ``jobqueue`` directory.
 Workers announce themselves in the ``workerqueue`` directory. The dispatcher 
 pairs a job with a worker, removes those entries from ``jobqueue``
 and ``workerqueue`` and creates a new entry in ``jobpods``, where workers will
