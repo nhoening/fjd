@@ -53,7 +53,7 @@ class Recruiter(object):
                 print('[FJD] Hired {} workers in project "{}" on {}.'\
                        .format(host['workers'], self.project, host['name']))
             else:
-                # for remote hosts, call the recruiter locally
+                # for remote hosts, call the recruiter over there
                 ssh_client = mk_ssh_client(host['name'], host['username'])
                 ssh(ssh_client, 'fjd-recruiter hire {} --project {}'\
                                  .format(host['workers'], self.project)) 
