@@ -32,7 +32,7 @@ If you do not have enough privileges (look for something like "Permission denied
 
     $ pip install fjd --user
     
-If you do not have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_. which should help to install all needed things. Download it and make it executable::
+If you do not have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_, which should help to install all needed things. Download it and make it executable::
     
     $ wget https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL
     $ chmod +x INSTALL
@@ -44,10 +44,10 @@ Now you can install system-wide::
 or, if you do not have enough privileges, you can also install locally::
     
     $ source INSTALL --user
- 
-::
+
+*Note*::
     
-    *Note:* If you installed locally, this should be added to your ``~/.bashrc``
+    If you installed locally, this should be added to your ``~/.bashrc``
     or ``~/.profile`` file:
 
     export PATH=~/.local/bin:$PATH
