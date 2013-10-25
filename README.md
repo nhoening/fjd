@@ -1,27 +1,35 @@
 fjd
 ===
 
-File-based job distribution. A straightforward pull-model for computational tasks,
+File-based job distribution on Unix-PCs. A straightforward pull-model for computational tasks,
 working with the assumption that all CPUs/cores can access a shared home directory.
+
 
 Installation
 -------------
-
-*Short answer*::
     
     $ pip install fjd
 
+If you do not have enough privileges (look for somthing like "Permission denied" in the output), install locally (for your user account only)::
 
-*Long answer*: If you don't have pip installed (I can't wait for everyone running Python 3.4), or if you don't have sufficient privileges to install with it, try this first::
+    $ pip install fjd --user
     
-    $ easy_install pip
+If you don't have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_. which should help to install all needed things. Download it make it executable::
     
-*Final answer*: If you also don't have easy_install (or the privileges), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_. which should help to install all needed things and install it only in your local home directory, so root privileges are not necessary. Download and execute it::
+    $ wget https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL
+    $ chmod +x INSTALL
     
-    $ chmmod +x INSTALL
-    $ source INSTALL
+Now you can install system-wide::
     
-Then, to always have fjd commands available in later sessions, this should be added to your ``~/.bashrc`` or ``.profile`` file::
+    $ ./INSTALL
+
+or, if you do not have enough privileges, you can also install locally::
+    
+    $ source INSTALL --user
+ 
+..Note::
+    
+    If you installed locally, this should be added to your ``~/.bashrc`` or ``~/.profile`` file::
 
     export PATH=~/.local/bin:$PATH
 
@@ -33,7 +41,7 @@ Usage
 
     $ fjd-recruiter hire <number of workers>
 
-  * Put jobs in the queue. You do this by putting a file per job in the ``jobqueue`` directory. I'll talk about the details of thesejob files in a minute. 
+  * Put jobs in the queue. You do this by putting a file per job in the ``jobqueue`` directory. I'll talk about the details of these job files in a minute. 
 
   * Then, start a dispatcher::
 

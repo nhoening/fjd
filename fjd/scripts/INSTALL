@@ -1,15 +1,30 @@
 #!/bin/bash
 
 # A script to install fjd locally, assuming limited privileges.
+#
 # Call it like this:
-# $ source INSTALL
-# To always have fjd commands available, this should be added to your ~/.bashrc 
-# or .profile file:
+# $ ./INSTALL
+# If you want to install locally, call it like this:
+# $ source INSTALL --user
+#
+# If you installed locally, this should be added to your ~/.bashrc 
+# or ~/.profile file:
 # export PATH=~/.local/bin:$PATH
- 
-wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
-python ez_setup.py --user
-rm ez_setup.py
-export PATH=~/.local/bin:$PATH
-easy_install --user pip
-pip install fjd --user
+
+if [ "$1" == "--user" ]; then
+    echo "[FJD] Installing fjd locally."
+    wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+    python ez_setup.py --user
+    rm ez_setup.py
+    export PATH=~/.local/bin:$PATH
+    easy_install --user pip
+    pip install fjd --user
+    echo "[FJD] You should add this to your ~/.bashrc or ~/.profile: 'export PATH=~/.local/bin:\$PATH'"
+else
+    echo "[FJD] Installing fjd system-wide (needs root-privileges)."
+    wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+    python ez_setup.py
+    rm ez_setup.py
+    easy_install pip
+    pip install fjd
+fi
