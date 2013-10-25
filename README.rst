@@ -47,7 +47,8 @@ or, if you do not have enough privileges, you can also install locally::
  
 ::
     
-    If you installed locally, this should be added to your ``~/.bashrc`` or ``~/.profile`` file::
+    *Note:* If you installed locally, this should be added to your ``~/.bashrc``
+    or ``~/.profile`` file:
 
     export PATH=~/.local/bin:$PATH
 
