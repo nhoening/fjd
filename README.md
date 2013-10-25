@@ -5,16 +5,34 @@ File-based job distribution on Unix-PCs. A straightforward pull-model for comput
 working with the assumption that all CPUs/cores can access a shared home directory.
 
 
+Usage
+-------
+
+  * Start one or more ``fjd-worker`` threads, like this::
+
+    $ fjd-recruiter hire <number of workers>
+
+  * Put jobs in the queue. You do this by putting a configuration file per job in the ``jobqueue`` directory. I'll talk about the details of these job files below and there is an example. 
+
+  * Then, start a dispatcher::
+
+    $ fjd-dispatcher
+
+Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy. This goes on until the job queue is empty.
+
+
 Installation
 -------------
-    
+
+::
+
     $ pip install fjd
 
-If you do not have enough privileges (look for somthing like "Permission denied" in the output), install locally (for your user account only)::
+If you do not have enough privileges (look for something like "Permission denied" in the output), install locally (for your user account only)::
 
     $ pip install fjd --user
     
-If you don't have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_. which should help to install all needed things. Download it make it executable::
+If you do not have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_. which should help to install all needed things. Download it and make it executable::
     
     $ wget https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL
     $ chmod +x INSTALL
@@ -27,40 +45,39 @@ or, if you do not have enough privileges, you can also install locally::
     
     $ source INSTALL --user
  
-..Note::
+::
     
     If you installed locally, this should be added to your ``~/.bashrc`` or ``~/.profile`` file::
 
     export PATH=~/.local/bin:$PATH
 
 
-Usage
--------
+How does fjd work, in a nutshell?
+-----------------------------------
 
-  * Start one or more workers, like this::
+Small files in your home directory are used to indicate which jobs have to be done (these are created by you)
+and which workers are available (these are created automatically). Files are also used by ``fjd`` to assign workers
+to jobs.
 
-    $ fjd-recruiter hire <number of workers>
+This simple file-based approach makes ``fjd`` very easy to use.
 
-  * Put jobs in the queue. You do this by putting a file per job in the ``jobqueue`` directory. I'll talk about the details of these job files in a minute. 
+For CPUs from several machines to work on your job queue, we make one necessary assumption: We assume that there 
+is a shared home directory for logged-in users, which all machines can access. This setting is very common now
+in universities and companies.
 
-  * Then, start a dispatcher::
+A little bit more detail about the ``fjd`` internals: 
+The ``fjd-recruiter`` creates worker threads on one or more machines. The ``fjd-worker`` processes announce themselves in the
+``workerqueue`` directory. The ``fjd-dispatcher`` finds your jobs in the ``jobqueue`` directory and pairs a job with an available worker.
+It then removes those entries from the ``jobqueue`` and ``workerqueue`` directories and creates a new entry in ``jobpods``, where workers will
+pick up their assignments. 
 
-    $ fjd-dispatcher
-
-Now the dispatcher assigns jobs to workers until all jobs are done.
-
-A little bit more detailled: The dispatcher finds jobs in the ``jobqueue`` directory.
-Workers announce themselves in the ``workerqueue`` directory. The dispatcher 
-pairs a job with a worker, removes those entries from ``jobqueue``
-and ``workerqueue`` and creates a new entry in ``jobpods``, where workers will
-pick up their assignments.
-Of course, these working directories will be created if they do not yet exist.
+All of these directories exist in ``~/.fjd`` and will of course be created if they do not yet exist.
 
 
 Job files
 ------------
 
-A job file should adhere to the general configuration file standard, where fjd
+A job file should adhere to the general configuration file standard, where ``fjd``
 only has some requirements for the ``control`` section, where you specify which
 command to execute and where results should go. Here is an example::
 
@@ -70,7 +87,6 @@ command to execute and where results should go. Here is an example::
 
     [params]
     param1: value0
-
 
 Your executable (the "job") gets this configuration file passed as a command line argument.
 This way, it can see for itself in which logfile to write to.
@@ -89,9 +105,9 @@ An example (on your local machine)
 ------------------------------------
 
 You can see how it all comes together by looking at the simple example in the ``example``
-directory where there is one script that represents a job (``example/ajob.py``) 
+directory where there is one script that represents a job (`example/ajob.py <https://raw.github.com/nhoening/fjd/master/fjd/example/ajob.py>`_) 
 and one that creates ten jobs similar to the one we saw above and puts them in
-the queue (``example/create_jobs.py``).
+the queue (`example/create_jobs.py <https://raw.github.com/nhoening/fjd/master/fjd/example/create_jobs.py>`_).
 
 To run this example, create jobs using the second script, recruit some workers 
 and start a dispatcher. Then, lean back and observe. We have a script that does
