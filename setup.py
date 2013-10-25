@@ -1,7 +1,7 @@
 # -*- coding:iso-8859-1
 
 from __future__ import print_function
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command.test import test as TestCommand
 import codecs
 import os
@@ -23,7 +23,7 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
-long_description = read('README.md') + read('CHANGES.md')
+long_description = read('README.rst') + read('CHANGES.rst')
 
 class PyTest(TestCommand):
     def finalize_options(self):

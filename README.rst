@@ -8,13 +8,13 @@ working with the assumption that all CPUs/cores can access a shared home directo
 Usage
 -------
 
-  * Start one or more ``fjd-worker`` threads, like this::
+* Start one or more ``fjd-worker`` threads, like this::
 
     $ fjd-recruiter hire <number of workers>
 
-  * Put jobs in the queue. You do this by putting a configuration file per job in the ``jobqueue`` directory. I'll talk about the details of these job files below and there is an example. 
+* Put jobs in the queue. You do this by putting a configuration file per job in the ``jobqueue`` directory. I'll talk about the details of these job files below and there is an example. 
 
-  * Then, start a dispatcher::
+* Then, start a dispatcher::
 
     $ fjd-dispatcher
 
