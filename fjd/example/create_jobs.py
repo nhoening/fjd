@@ -3,12 +3,14 @@
 import os
 
 if __name__ == '__main__':
+    # first make sure the ~/.fjd/default/jobqueue directory exists
     fjd_dir = os.path.expanduser('~/.fjd')
     for d in ('logfiles', fjd_dir, '{}/default'.format(fjd_dir),
               '{}/default/jobqueue'.format(fjd_dir)):
         if not os.path.exists(d):
             os.mkdir(d)
 
+    # now put 10 jobs in the queue
     for i in range(10):
         jobconf = '''[control]
 executable: python ajob.py
