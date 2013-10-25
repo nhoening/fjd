@@ -1,8 +1,9 @@
 fjd
 ===
 
-File-based job distribution on Unix-PCs. A straightforward pull-model for computational tasks,
-working with the assumption that all CPUs/cores can access a shared home directory.
+File-based distribution of jobs to CPUs on Unix-PCs (idle workers "pull" new jobs).
+As assignments works via files, the hurdle to install and use should be very low.
+Works under the assumption that all CPUs can access a shared home directory.
 
 
 Usage
@@ -45,7 +46,7 @@ or, if you do not have enough privileges, you can also install locally::
     
     $ source INSTALL --user
 
-*Note*::
+**Note**::
     
     If you installed locally, this should be added to your ``~/.bashrc``
     or ``~/.profile`` file:
