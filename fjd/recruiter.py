@@ -33,7 +33,6 @@ class Recruiter(object):
                 hid = "host{}".format(num_hosts + 1)
                 self.hosts.append(
                  dict(name=remote_conf.get(hid, "name"),
-                      user=getpass.getuser(),
                       workers=remote_conf.getint(hid, "workers")))
                 num_hosts += 1
             if debug:
@@ -61,7 +60,7 @@ class Recruiter(object):
                        .format(host['workers'], self.project))
             else:
                 # for remote hosts, call the recruiter over there
-                ssh_client = mk_ssh_client(host['name'], host['user'])
+                ssh_client = mk_ssh_client(host['name'], getuser())
                 print("[fjd-recruiter] Host {}: {}".format(host['name'],
                         ssh(ssh_client, 'fjd-recruiter --project {} --local-only hire {}'\
                             .format(self.project, host['workers'])).strip().replace('\n', '\n        ....')))
@@ -87,7 +86,7 @@ class Recruiter(object):
                             .format(self.project))
             elif not only_local:
                 # for remote hosts, call the recruiter over there
-                ssh_client = mk_ssh_client(host['name'], host['user'])
+                ssh_client = mk_ssh_client(host['name'], getuser())
                 print("[fjd-recruiter] Host {}: {}".format(host['name'],
                         ssh(ssh_client, 'fjd-recruiter --local-only --project {} fire'\
                                   .format(self.project)).strip().replace('\n', '\n        ....')))
