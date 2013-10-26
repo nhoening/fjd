@@ -151,7 +151,7 @@ And you'll see the results, the log files written by our example jobs::
     job0.dat	job2.dat	job4.dat	job6.dat	job8.dat
     job1.dat	job3.dat	job5.dat	job7.dat	job9.dat
 
-Workers are Unix screen sessions, you can see them by typing
+Workers are Unix screen sessions, you can see them by typing::
 
     $ screen -ls
 
@@ -196,7 +196,7 @@ Normally, that directory is ``~/.fjd/default``. In this example, we tell ``fjd``
 use a different project identifier (this way, you could have several projects
 running without them getting into each other's way, i.e. stopping one project 
 wouldn't stop the workers of the other and you wouldn't override the first project 
-if you start another). Here is ``run-remote-example.sh``, using the project
+if you start another). Here is the content of ``run-remote-example.sh``, using the project
 identifier ``remote-example``::
 
     #/bin/bash
@@ -206,7 +206,7 @@ identifier ``remote-example``::
     fjd-recruiter --project remote-example hire
     fjd-dispatcher --project remote-example 
  
-If you run this example, the output you'll see should be similar to this:
+If you run this example, the output you'll see should be similar to this::
  
     $ cd fjd/example
     $ ./run-remote-example.sh 
