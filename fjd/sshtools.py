@@ -1,4 +1,5 @@
 from getpass import getpass
+import time
 # ignore deprecation warnings that paramiko currently delivers
 import warnings
 warnings.simplefilter("ignore", DeprecationWarning)
@@ -24,9 +25,9 @@ def ssh(client, cmd, ignore=[]):
             stdin, stdout, stderr = client.exec_command(cmd)
             done = True
         except:
-           time.sleep(4)
+            time.sleep(4)
     err = stderr.read()
-    dontcare_snippets = ('xset:', 'cannot remove')
+    dontcare_snippets = ['xset:', 'cannot remove']
     dontcare_snippets.extend(ignore)
     err_out = ""
     for e_line in err.split('\n'):
@@ -38,7 +39,7 @@ def ssh(client, cmd, ignore=[]):
             err_out += '%s\n' % e_line
     if err_out.strip() != "":
         print("[FJD] Error while doing stuff on server: {}".format(err_out))
-    return "[FJD] Log from remotely executing [{}]:\n\n\n{}".format(cmd, stdout.read())
+    return stdout.read()
 
 
 def mk_ssh_client(hostname, username):
@@ -56,9 +57,8 @@ def mk_ssh_client(hostname, username):
     try:
         ssh_client.connect(hostname, username=username)
     except (paramiko.AuthenticationException, paramiko.SSHException):
-        pass
-        #print "[FJD] Could not connect to host '%s' as user '%s' with no password." % (hostname, usr)
-        #print "          If you want password-less logon, please check your RSA key or shared/remembered connection setup."
+        print "[FJD] Could not connect to host '%s' as user '%s' with no password." % (hostname, username)
+        print "          If you want password-less logon, please check your RSA key or shared/remembered connection setup."
     except Exception, e:
         print("[FJD] WARNING: Error while connecting with host {}: {}. ".format(hostname, e))
         if "Unknown server" in str(e):

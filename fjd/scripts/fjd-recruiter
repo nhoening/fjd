@@ -13,6 +13,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recruit workers.')
     parser.add_argument('--project', type=str, help="Custom identifier (useful"\
                                   " when fjd is used to run several projects).")
+    parser.add_argument('--local-only', action='store_true', help="Ignore remote.conf")
     hf_parsers = parser.add_subparsers(title='action', dest='action')
     hp = hf_parsers.add_parser('hire', help='Hire some workers')
     hp.add_argument('num_workers', type=int, nargs='?', default=NUM_CPUS - 1,
@@ -22,9 +23,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.action == 'hire':
-        recruiter = Recruiter(num_workers=args.num_workers, project=args.project)
+        recruiter = Recruiter(num_workers=args.num_workers, project=args.project,
+                              local_only=args.local_only)
         recruiter.hire()
     elif args.action == 'fire':
-        recruiter = Recruiter(project=args.project)
+        recruiter = Recruiter(project=args.project, local_only=args.local_only)
         recruiter.fire()
-        
+

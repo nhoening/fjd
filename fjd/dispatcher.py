@@ -30,7 +30,7 @@ class Dispatcher(CoreProcess):
             jq = os.listdir('{}/jobqueue'.format(self.wdir))
             wq = os.listdir('{}/workerqueue'.format(self.wdir))
             if len(jq) > 0:
-                print("[FJD] Found {} jobs and {} workers. Dispatching ..."\
+                print("[FJD] Found {} job(s) and {} worker(s). Dispatching ..."\
                        .format(len(jq), len(wq)))
                 for _ in range(min(len(jq), len(wq))):
                     worker = wq.pop()
