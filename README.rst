@@ -139,7 +139,7 @@ And this is output similar to what you should see::
     [fjd-recruiter] Fired 4 workers in project "default".
 
 
-Note that the Dispatcher is started after jobs are created because per default, 
+Note that ``fjd-dispatcher`` is started after jobs are created because per default, 
 it will fire workers (kill screen sessions) and terminate itself once it finds 
 the queue of jobs being empty. This behaviour can be overwritten with a parameter
 if needed and then you could have the dispacther running and push jobs in the 
@@ -178,9 +178,9 @@ up), then you can always fire workers by hand::
 Another example (using several machines in your network and a custom project name)
 ------------------------------------------------------------------------------------
 
-We can tell ´´fjd´´ about other machines in the network and how many workers we'd like
-to employ on them. To do that, we place a file called ´´remote.conf´´in the project's
-directory. Here is my file ´´example/remote.conf´´: If you run this example, 
+We can tell ``fjd`` about other machines in the network and how many workers we'd like
+to employ on them. To do that, we place a file called ``remote.conf`` in the project's
+directory. Here is my file ``example/remote.conf``: If you run this example, 
 you'll have to fill in names of machines in your particular network, of course::
 
     [host1]
@@ -192,12 +192,12 @@ you'll have to fill in names of machines in your particular network, of course::
     workers: 5
 
 
-Normally, that directory is ~/.fjd/default. In this example, we tell ´´fjd´´ to
+Normally, that directory is ``~/.fjd/default``. In this example, we tell ``fjd`` to
 use a different project identifier (this way, you could have several projects
 running without them getting into each other's way, i.e. stopping one project 
 wouldn't stop the workers of the other and you wouldn't override the first project 
 if you start another). Here is ``run-remote-example.sh``, using the project
-identifier ´´remote-example´´::
+identifier ``remote-example``::
 
     #/bin/bash
 
