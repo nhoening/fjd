@@ -21,6 +21,9 @@ Usage
 
 Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy. This goes on until the job queue is empty.
 
+You can configure a number of hosts in your network and how many workers should be 
+running on each (see an example of this below).
+
 
 Installation
 -------------
@@ -49,6 +52,9 @@ or, if you do not have enough privileges, you can also install locally::
 **Note** - If you installed locally, this should be added to your ``~/.bashrc`` or ``~/.profile`` file::
 
     export PATH=~/.local/bin:$PATH
+
+**Note** - Installing locally could be the better choice, because it might save you from installing ``fjd`` on each machine you want to use.
+If they all share the home directory, they will all know about ``fjd`` once you are logged in. 
 
 
 How does fjd work, in a nutshell?
@@ -200,7 +206,7 @@ identifier ´´remote-example´´::
     fjd-recruiter --project remote-example hire
     fjd-dispatcher --project remote-example 
  
-If you run this xample, the output you'll see should be similar to this:
+If you run this example, the output you'll see should be similar to this:
  
     $ cd fjd/example
     $ ./run-remote-example.sh 
@@ -213,3 +219,6 @@ If you run this xample, the output you'll see should be similar to this:
     [fjd-recruiter] Fired 3 workers in project "remote-example".
     [fjd-recruiter] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
 
+**Note** - If you normally have to type in a password to login to a remote machine via SSH,
+you'll have to do this here, as well. Some SSH configuration can go a long way to ease your life,
+e.g. by key management or the ControlAuto option. Ask your local IT guy. 
