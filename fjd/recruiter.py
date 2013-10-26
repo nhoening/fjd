@@ -2,6 +2,7 @@
 
 import os
 import os.path as osp
+from getpass import getuser
 from screenutils import list_screens #, Screen
 from ConfigParser import ConfigParser
 
@@ -32,16 +33,16 @@ class Recruiter(object):
                 hid = "host{}".format(num_hosts + 1)
                 self.hosts.append(
                  dict(name=remote_conf.get(hid, "name"),
-                      user=remote_conf.get(hid, "user"),
+                      user=getpass.getuser(),
                       workers=remote_conf.getint(hid, "workers")))
                 num_hosts += 1
             if debug:
-                print("[FJD] Recruiter is configured with hosts {}."\
+                print("[fjd-recruiter] I am configured with hosts {}."\
                     .format(','.join([h['name'] for h in self.hosts])))
 
     def hire(self):
         if len(self.hosts) == 0:
-            print("[FJD] Recruiter not sufficiently intialised to hire!")
+            print("[fjd-recruiter] Not sufficiently intialised to hire!")
             return
         self.fire(only_local=True)
         for host in self.hosts:
@@ -56,18 +57,18 @@ class Recruiter(object):
                     #s.send_commands('python fjd/worker.py')
                     os.system('bgscreen {} "fjd-worker --project {}"'\
                               .format(sid, self.project))
-                print('[FJD] Hired {} workers in project "{}".'\
+                print('[fjd-recruiter] Hired {} workers in project "{}".'\
                        .format(host['workers'], self.project))
             else:
                 # for remote hosts, call the recruiter over there
                 ssh_client = mk_ssh_client(host['name'], host['user'])
-                print("[FJD] Host {}: {}".format(host['name'],
+                print("[fjd-recruiter] Host {}: {}".format(host['name'],
                         ssh(ssh_client, 'fjd-recruiter --project {} --local-only hire {}'\
                             .format(self.project, host['workers'])).strip().replace('\n', '\n        ....')))
 
     def fire(self, only_local=False):
         if len(self.hosts) == 0:
-            print("[FJD] No configured workers that I could search for!")
+            print("[fjd-recruiter] No configured workers that I could search for!")
             return
         for host in self.hosts:
             if host['name'] == 'localhost':
@@ -79,15 +80,15 @@ class Recruiter(object):
                 if fired > 0:
                     for f in os.listdir('{}/workerqueue'.format(self.wdir)):
                         os.remove('{}/workerqueue/{}'.format(self.wdir, f))
-                    print('[FJD] Fired {} workers in project "{}".'\
+                    print('[fjd-recruiter] Fired {} workers in project "{}".'\
                             .format(fired, self.project))
                 elif debug:
-                    print('[FJD] No workers busy (yet) in project "{}".'\
+                    print('[fjd-recruiter] No workers busy (yet) in project "{}".'\
                             .format(self.project))
             elif not only_local:
                 # for remote hosts, call the recruiter over there
                 ssh_client = mk_ssh_client(host['name'], host['user'])
-                print("[FJD] Host {}: {}".format(host['name'],
+                print("[fjd-recruiter] Host {}: {}".format(host['name'],
                         ssh(ssh_client, 'fjd-recruiter --local-only --project {} fire'\
                                   .format(self.project)).strip().replace('\n', '\n        ....')))
 

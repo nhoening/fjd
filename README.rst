@@ -122,16 +122,15 @@ And this is output similar to what you should see::
 
     $ cd fjd/example
     $ ./run-example.sh 
-    [FJD] No workers busy in project "default" on localhost.
-    [FJD] Hired 4 workers in project "default" on localhost.
-    [FJD] Dispatcher started on project "default"
-    [FJD] Found 10 jobs and 4 workers. Dispatching ...
-    [FJD] Found 6 jobs and 1 workers. Dispatching ...
-    [FJD] Found 5 jobs and 3 workers. Dispatching ...
-    [FJD] Found 2 jobs and 1 workers. Dispatching ...
-    [FJD] Found 1 jobs and 1 workers. Dispatching ...
-    [FJD] No (more) jobs to dispatch.
-    [FJD] Fired 4 workers in project "default" on localhost.
+    [fjd-recruiter] Hired 4 workers in project "default".
+    [fjd-dispatcher] Started on project "default"
+    [fjd-dispatcher] Found 10 job(s) and 4 worker(s)...
+    [fjd-dispatcher] Found 6 job(s) and 1 worker(s)...
+    [fjd-dispatcher] Found 5 job(s) and 2 worker(s)...
+    [fjd-dispatcher] Found 3 job(s) and 1 worker(s)...
+    [fjd-dispatcher] Found 2 job(s) and 3 worker(s)...
+    [fjd-dispatcher] No (more) jobs.
+    [fjd-recruiter] Fired 4 workers in project "default".
 
 
 Note that the Dispatcher is started after jobs are created because per default, 
@@ -150,20 +149,67 @@ Workers are Unix screen sessions, you can see them by typing
 
     $ screen -ls
 
-and inspect them if you want. By the way, you can always fire workers by hand:
-
-    $ fjd-recruiter fire
+and inspect them if you want (a feature is planned to give easy access to 
+log output from the screen sessions).
 
 Here is the log from a screen session of a worker if you're interested::
 
     $ fjd-worker --project default
-    [FJD] Worker with ID nics-macbook.fritz.box_1382522062.31 started.
-    [FJD] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
-    [FJD] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
-    [FJD] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
-    [FJD] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
+    [fjd-worker] Started with ID nics-macbook.fritz.box_1382522062.31.
+    [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
+    [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
+    [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
+    [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
+
+By the way, if screen sessions are running and you want them to stop (maybe
+because you aborted the dispatcher before he could tell the recruiter to clean
+up), then you can always fire workers by hand::
+
+    $ fjd-recruiter fire
 
 
-An example (using several machines in your network)
------------------------------------------------------
-TODO
+
+Another example (using several machines in your network and a custom project name)
+------------------------------------------------------------------------------------
+
+We can tell ´´fjd´´ about other machines in the network and how many workers we'd like
+to employ on them. To do that, we place a file called ´´remote.conf´´in the project's
+directory. Here is my file ´´example/remote.conf´´: If you run this example, 
+you'll have to fill in names of machines in your particular network, of course::
+
+    [host1]
+    name: localhost
+    workers: 3
+
+    [host2]
+    name: hyuga.sen.cwi.nl
+    workers: 5
+
+
+Normally, that directory is ~/.fjd/default. In this example, we tell ´´fjd´´ to
+use a different project identifier (this way, you could have several projects
+running without them getting into each other's way, i.e. stopping one project 
+wouldn't stop the workers of the other and you wouldn't override the first project 
+if you start another). Here is ``run-remote-example.sh``, using the project
+identifier ´´remote-example´´::
+
+    #/bin/bash
+
+    python create_jobs.py remote-example
+    cp remote.conf ~/.fjd/remote-example/remote.conf
+    fjd-recruiter --project remote-example hire
+    fjd-dispatcher --project remote-example 
+ 
+If you run this xample, the output you'll see should be similar to this:
+ 
+    $ cd fjd/example
+    $ ./run-remote-example.sh 
+    [FJD] Hired 3 workers in project "remote-example".
+    [FJD] Host hyuga.sen.cwi.nl: [fjd-recruiter] Hired 5 workers in project "remote-example".
+    [FJD] Initialised on project "remote-example"
+    [FJD] Found 10 job(s) and 8 worker(s).
+    [FJD] Found 2 job(s) and 7 worker(s). 
+    [FJD] No (more) jobs to dispatch.
+    [FJD] Fired 3 workers in project "remote-example".
+    [FJD] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
+

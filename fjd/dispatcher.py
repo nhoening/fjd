@@ -22,7 +22,7 @@ class Dispatcher(CoreProcess):
         self.wdir = ensure_wdir(project)
         self.start_up()
 
-        print('[FJD] Dispatcher started on project "{}"'.format(project))
+        print('[fjd-dispatcher] Started on project "{}"'.format(project))
 
         do_work = True
         while do_work:
@@ -30,7 +30,7 @@ class Dispatcher(CoreProcess):
             jq = os.listdir('{}/jobqueue'.format(self.wdir))
             wq = os.listdir('{}/workerqueue'.format(self.wdir))
             if len(jq) > 0:
-                print("[FJD] Found {} job(s) and {} worker(s). Dispatching ..."\
+                print("[fjd-dispatcher] Found {} job(s) and {} worker(s)..."\
                        .format(len(jq), len(wq)))
                 for _ in range(min(len(jq), len(wq))):
                     worker = wq.pop()
@@ -39,7 +39,7 @@ class Dispatcher(CoreProcess):
                               '{wdir}/jobpod/{w}'.format(wdir=self.wdir, w=worker))
                     os.remove('{wdir}/workerqueue/{w}'.format(wdir=self.wdir, w=worker))
             elif end_on_empty_queue:
-                print("[FJD] No (more) jobs to dispatch.")
+                print("[fjd-dispatcher] No (more) jobs.")
                 Recruiter(project=project).fire()
                 do_work = False
             # TODO: maybe update a little stats file about work done so far

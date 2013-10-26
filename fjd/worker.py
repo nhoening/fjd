@@ -22,14 +22,14 @@ class Worker(CoreProcess):
 
         # announce my presence
         self.id = self.mk_id()
-        print('[FJD] Worker with ID {id} started.'.format(id=self.id))
+        print('[fjd-worker] Started with ID {id}.'.format(id=self.id))
         os.system('touch {wdir}/workerqueue/{id}.worker'\
                    .format(wdir=self.wdir, id=self.id))
 
         while True:
             job = self.next_job_on_pod()
             if job:
-                print('[FJD] Worker {}: I found a job.'.format(self.id))
+                print('[fjd-worker] Worker {}: I found a job.'.format(self.id))
                 # A job is a config file
                 conf = ConfigParser() 
                 conf.read('{}/jobpod/{}'.format(self.wdir, job))
@@ -40,7 +40,7 @@ class Worker(CoreProcess):
                       'touch {wdir}/workerqueue/{id}.worker'.format(exe=exe,
                                     job=job, wdir=self.wdir, log=log, id=self.id)
                 Popen(cmd, shell=True).wait()
-                print('[FJD] Worker {}: Finished my job.'.format(self.id))
+                print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))
             time.sleep(interval)
 
     def mk_id(self):
