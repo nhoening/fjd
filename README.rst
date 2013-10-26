@@ -204,12 +204,12 @@ If you run this xample, the output you'll see should be similar to this:
  
     $ cd fjd/example
     $ ./run-remote-example.sh 
-    [FJD] Hired 3 workers in project "remote-example".
-    [FJD] Host hyuga.sen.cwi.nl: [fjd-recruiter] Hired 5 workers in project "remote-example".
-    [FJD] Initialised on project "remote-example"
-    [FJD] Found 10 job(s) and 8 worker(s).
-    [FJD] Found 2 job(s) and 7 worker(s). 
-    [FJD] No (more) jobs to dispatch.
-    [FJD] Fired 3 workers in project "remote-example".
-    [FJD] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
+    [fjd-recruiter] Hired 3 workers in project "remote-example".
+    [fjd-recruiter] Host hyuga.sen.cwi.nl: [fjd-recruiter] Hired 5 workers in project "remote-example".
+    [fjd-dispatcher] Started on project "remote-example"
+    [fjd-dispatcher] Found 10 job(s) and 8 worker(s)...
+    [fjd-dispatcher] Found 2 job(s) and 4 worker(s)...
+    [fjd-dispatcher] No (more) jobs.
+    [fjd-recruiter] Fired 3 workers in project "remote-example".
+    [fjd-recruiter] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
 
