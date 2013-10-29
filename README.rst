@@ -28,7 +28,7 @@ running on each (see an example of this below).
 Installation
 -------------
 
-::
+First, you need to have python 2.7 or above, which is the case on almost all systems these days. Then::
 
     $ pip install fjd
 
@@ -53,7 +53,8 @@ or, if you do not have enough privileges, you can also install locally::
 
     export PATH=~/.local/bin:$PATH
 
-**Note** - Installing locally could be the better choice, because it might save you from installing ``fjd`` on each machine you want to use.
+**Note** - Installing locally could be the better choice, actually, because it might save you
+from installing ``fjd`` on each machine you want to use.
 If they all share the home directory, they will all know about ``fjd`` once you are logged in. 
 
 
