@@ -1,11 +1,19 @@
 # -*- coding:iso-8859-1
-
 from __future__ import print_function
+import sys
+
+if sys.version[0:3] < '2.7':
+    error = """\
+ERROR: 'fjd requires Python version 2.7 or above.'
+Exiting."""
+    sys.stderr.write(error)
+    sys.exit(1)
+
+
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 import codecs
 import os
-import sys
 import re
 
 
