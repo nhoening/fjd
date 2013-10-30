@@ -16,7 +16,7 @@ if __name__ == '__main__':
     parser.add_argument('--local-only', action='store_true', help="Ignore remote.conf")
     hf_parsers = parser.add_subparsers(title='action', dest='action')
     hp = hf_parsers.add_parser('hire', help='Hire some workers')
-    hp.add_argument('num_workers', type=int, nargs='?', default=NUM_CPUS - 1,
+    hp.add_argument('num_workers', type=int, nargs='?', default=max(1, NUM_CPUS - 1),
                     help="How many workers are needed.")
     hf_parsers.add_parser('fire', help='Fire everyone (in this project)')
 
