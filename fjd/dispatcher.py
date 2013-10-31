@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import os
 import time
 
@@ -30,8 +31,9 @@ class Dispatcher(CoreProcess):
             jq = os.listdir('{}/jobqueue'.format(self.wdir))
             wq = os.listdir('{}/workerqueue'.format(self.wdir))
             if len(jq) > 0:
-                print("[fjd-dispatcher] Found {} job(s) and {} worker(s)..."\
+                sys.stdout.write("\r[fjd-dispatcher] Found {} job(s) and {} free worker(s)..."\
                        .format(len(jq), len(wq)))
+                sys.stdout.flush()
                 for _ in range(min(len(jq), len(wq))):
                     worker = wq.pop()
                     job = jq.pop()
@@ -39,11 +41,9 @@ class Dispatcher(CoreProcess):
                               '{wdir}/jobpod/{w}'.format(wdir=self.wdir, w=worker))
                     os.remove('{wdir}/workerqueue/{w}'.format(wdir=self.wdir, w=worker))
             elif end_on_empty_queue:
-                print("[fjd-dispatcher] No (more) jobs.")
+                print("\n[fjd-dispatcher] No (more) jobs.")
                 Recruiter(project=project).fire()
                 do_work = False
-            # TODO: maybe update a little stats file about work done so far
-            #       and also who is currently busy? 
         
         self.wrap_up()
 
