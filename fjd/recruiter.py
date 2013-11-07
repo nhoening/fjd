@@ -31,9 +31,14 @@ class Recruiter(object):
             num_hosts = 0
             while remote_conf.has_section('host{}'.format(num_hosts + 1)):
                 hid = "host{}".format(num_hosts + 1)
-                self.hosts.append(
-                 dict(name=remote_conf.get(hid, "name"),
-                      workers=remote_conf.getint(hid, "workers")))
+                if not remote_conf.has_option(hid, 'name') or\
+                   not remote_conf.has_option(hid, 'workers'):
+                    print("[fjd-recruiter] Host section for {} is missing"\
+                          " name or workers option!".format(hid))
+                else:
+                    self.hosts.append(
+                        dict(name=remote_conf.get(hid, "name"),
+                             workers=remote_conf.getint(hid, "workers")))
                 num_hosts += 1
             if debug:
                 print("[fjd-recruiter] I am configured with hosts {}."\
