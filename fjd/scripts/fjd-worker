@@ -7,7 +7,7 @@ from fjd import Worker
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Start a worker process.')
-    parser.add_argument('--interval', type=float, default=.5,
+    parser.add_argument('--interval', type=float, default=.1,
                         help="The interval (in seconds) between polling for jobs.")
     parser.add_argument('--project', type=str, help="Custom identifier (useful"\
                                   " when fjd is used to run several projects).")

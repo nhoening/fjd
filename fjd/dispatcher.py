@@ -17,7 +17,7 @@ class Dispatcher(CoreProcess):
     to workers by moving jobs to the `jobpod` directory. 
     '''
 
-    def __init__(self, interval=5, project=None, end_on_empty_queue=True):
+    def __init__(self, interval=.1, project=None, end_on_empty_queue=True):
         if not project:
             project = 'default'
         self.wdir = ensure_wdir(project)

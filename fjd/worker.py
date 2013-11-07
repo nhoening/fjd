@@ -14,7 +14,7 @@ class Worker(CoreProcess):
     A worker process
     '''
     
-    def __init__(self, interval=5, project=None):
+    def __init__(self, interval=.1, project=None):
         if not project:
             project = 'default'
         self.wdir = ensure_wdir(project)
@@ -26,6 +26,7 @@ class Worker(CoreProcess):
         os.system('touch {wdir}/workerqueue/{id}.worker'\
                    .format(wdir=self.wdir, id=self.id))
 
+        # look for jobs
         while True:
             job = self.next_job_on_pod()
             if job:
