@@ -48,7 +48,7 @@ class Recruiter(object):
         if len(self.hosts) == 0:
             print("[fjd-recruiter] Not sufficiently intialised to hire!")
             return
-        self.fire(only_local=True)
+        self.fire(local_Only=True)
         for host in self.hosts:
             if host['name'] == 'localhost':
                 for worker in range(host['workers']):
@@ -70,7 +70,7 @@ class Recruiter(object):
                         ssh(ssh_client, 'fjd-recruiter --project {} --local-only hire {}'\
                             .format(self.project, host['workers'])).strip().replace('\n', '\n        ....')))
 
-    def fire(self, only_local=False):
+    def fire(self, local_only=False):
         if len(self.hosts) == 0:
             print("[fjd-recruiter] No configured workers that I could search for!")
             return
@@ -89,7 +89,7 @@ class Recruiter(object):
                 elif debug:
                     print('[fjd-recruiter] No workers busy (yet) in project "{}".'\
                             .format(self.project))
-            elif not only_local:
+            elif not local_only:
                 # for remote hosts, call the recruiter over there
                 ssh_client = mk_ssh_client(host['name'], getuser())
                 print("[fjd-recruiter] Host {}: {}".format(host['name'],
