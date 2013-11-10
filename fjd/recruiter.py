@@ -48,7 +48,7 @@ class Recruiter(object):
         if len(self.hosts) == 0:
             print("[fjd-recruiter] Not sufficiently intialised to hire!")
             return
-        self.fire(local_Only=True)
+        self.fire(local_only=True)
         for host in self.hosts:
             if host['name'] == 'localhost':
                 for worker in range(host['workers']):
