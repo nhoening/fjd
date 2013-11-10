@@ -11,9 +11,20 @@ Usage
 
 * Start one or more ``fjd-worker`` threads, like this::
 
-    $ fjd-recruiter hire <number of workers>
+    $ fjd-recruiter hire [<number of workers>]
 
-* Put jobs in the queue. You do this by putting a configuration file per job in the ``jobqueue`` directory. I'll talk about the details of these job files below and there is an example. 
+  Per default, this starts n-1 worker threads, where n is the number of CPUs on your machine. 
+
+* Put jobs in the job queue. You do this by putting a configuration file per job in a designated directory (e.g. ``~/.fjd/default/jobqueue``, where 'default' could be changed to a specific project name). Here is an example job::
+
+    [control]
+    executable: python example/ajob.py
+    logfile: logfiles/job0.dat 
+
+    [params]
+    param1: value0
+
+  I'll talk about the details of these job files below and there is a full example as well. 
 
 * Then, start a dispatcher::
 
