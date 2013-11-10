@@ -1,9 +1,15 @@
 fjd
 ===
 
-File-based distribution of jobs to CPUs on Unix-PCs (idle workers "pull" new jobs).
-As assignments works via files, the hurdle to install and use should be very low.
-Works under the assumption that all CPUs can access a shared home directory.
+File-based distribution of jobs to CPUs on Unix-PCs.
+
+There are powerful tools for automatic job distribution, but for smaller use cases,
+installation and maintenance effort is too high. In `fjd``, the hurdle to install and use should be very low
+(assigning jobs works via files in your home directory). 
+
+Jobs can be written in any language, ``fjd`` is only there to assign jobs to worker threads.
+Pull-model: idle workers get their next job from a queue.
+Works under the assumption that all CPUs are in a local network and can access a shared home directory.
 
 
 Usage
