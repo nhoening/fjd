@@ -11,7 +11,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         project = sys.argv[1]
     wdir = fjd.utils.ensure_wdir(project)
-    fjd.utils.empty_queues()
+    fjd.utils.empty_queues(project)
     if not os.path.exists('logfiles'):
         os.mkdir('logfiles')
 
