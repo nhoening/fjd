@@ -3,6 +3,7 @@
 import os
 import os.path as osp
 from getpass import getuser
+from subprocess import Popen
 from screenutils import list_screens #, Screen
 from ConfigParser import ConfigParser
 
@@ -55,12 +56,13 @@ class Recruiter(object):
                     sid = "{}-{}-{}".format(self.project,
                                             self.hosts.index(host) + 1,
                                             worker + 1)
-                    # This below is not working well, TODO, until then we use a script
+                    # This below is not working well (screen blinks), and 
+                    # with the manual way we get more precision in creating screens
                     #s = Screen(sid, True)
                     #s.send_commands('bash')
                     #s.send_commands('python fjd/worker.py')
-                    os.system('bgscreen {} "fjd-worker --project {}"'\
-                              .format(sid, self.project))
+                    Popen('bgscreen {} "fjd-worker --project {}"'\
+                              .format(sid, self.project), shell=True).wait()
                 print('[fjd-recruiter] Hired {} workers in project "{}".'\
                        .format(host['workers'], self.project))
             else:

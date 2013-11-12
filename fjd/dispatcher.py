@@ -44,7 +44,5 @@ class Dispatcher(CoreProcess):
                 print("\n[fjd-dispatcher] No (more) jobs.")
                 Recruiter(project=project).fire()
                 do_work = False
-        
         self.wrap_up()
-
 

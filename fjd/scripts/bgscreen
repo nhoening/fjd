@@ -1,6 +1,8 @@
 #!/bin/bash
 # run a cmd in a background screen
-# $1 is a screen identifier, $2 is the command
-screen -d -m -S $1 # -c screenrcs/$1.rc
-sleep 2
-screen -S $1 -p 0 -X stuff "$2"
+# $1 is a screen identifier, $2 is the comand
+
+
+screen -d -m -S $1 -L
+sleep 1
+screen -p 0 -S $1 -X stuff "$2"

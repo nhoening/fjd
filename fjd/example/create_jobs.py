@@ -5,11 +5,12 @@ import os
 
 import fjd
 
+
 if __name__ == '__main__':
-    # first make sure the ~/.fjd/<project>/jobqueue directory exists
     project = "default"
     if len(sys.argv) > 1:
         project = sys.argv[1]
+    # first make sure the needed directories exists
     wdir = fjd.utils.ensure_wdir(project)
     fjd.utils.empty_queues(project)
     if not os.path.exists('logfiles'):

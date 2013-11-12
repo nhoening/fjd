@@ -5,7 +5,6 @@ import os.path as osp
 def ensure_wdir(project='default'):
     '''
     Makes sure working directory with needed sub-directories exists.
-    Also ensures directories are empty.
     Returns path to project directory.
     '''
     if project == '':
@@ -23,6 +22,9 @@ def ensure_wdir(project='default'):
 
 
 def empty_queues(project='default'):
+    '''
+    Empty the queues - creates a blank state
+    '''
     if project == '':
         project = 'default'
     fjd_home = osp.expanduser('~/.fjd')
