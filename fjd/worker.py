@@ -4,6 +4,7 @@ import os
 import time
 from ConfigParser import ConfigParser
 import subprocess
+from socket import gethostname
 
 from fjd.core_process import CoreProcess
 from fjd.utils import ensure_wdir
@@ -23,8 +24,8 @@ class Worker(CoreProcess):
         # announce my presence
         self.id = self.mk_id()
         print('[fjd-worker] Started with ID {id}.'.format(id=self.id))
-        os.system('touch {wdir}/workerqueue/{id}.worker'\
-                   .format(wdir=self.wdir, id=self.id))
+        subprocess.call('touch {wdir}/workerqueue/{id}.worker'\
+                   .format(wdir=self.wdir, id=self.id), shell=True)
 
         # look for jobs
         while True:
@@ -36,18 +37,19 @@ class Worker(CoreProcess):
                 conf.read('{}/jobpod/{}'.format(self.wdir, job))
                 exe = conf.get('control', 'executable')
                 exe_log = conf.get('control', 'logfile')
-                # remove job from pod, execute task and re-announce myself
-                cmd = 'touch {log}; {exe} {wdir}/jobpod/{job}; rm {wdir}/jobpod/{job}; '\
-                      'touch {wdir}/workerqueue/{id}.worker'.format(exe=exe,
-                                    job=job, wdir=self.wdir, log=exe_log, id=self.id)
+                # make log file and execute task
+                cmd = 'touch {log}; {exe} {wdir}/jobpod/{job}; '\
+                       .format(log=exe_log, exe=exe, wdir=self.wdir, job=job)
                 subprocess.call(cmd, shell=True)
                 print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))
+                # remove the job from pod (signaling it is done) + re-announce myself
+                subprocess.call('rm {wdir}/jobpod/{job}; touch {wdir}/workerqueue/{id}.worker'\
+                        .format(wdir=self.wdir, job=job, id=self.id), shell=True)
             time.sleep(interval)
 
     def mk_id(self):
-        host = os.uname()[1]
         ms = time.time()
-        return '{h}_{t}'.format(h=host, t=ms)
+        return '{h}_{t}'.format(h=gethostname(), t=ms)
 
     def next_job_on_pod(self):
         my_jobs = [j for j in os.listdir('{}/jobpod'.format(self.wdir))\

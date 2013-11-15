@@ -4,6 +4,7 @@ import os
 import os.path as osp
 from getpass import getuser
 import subprocess
+from socket import gethostname
 from screenutils import list_screens #, Screen
 from ConfigParser import ConfigParser
 
@@ -16,10 +17,11 @@ debug = False
 
 class Recruiter(object):
 
-    def __init__(self, num_workers=1, project=None, local_only=False):
+    def __init__(self, num_workers=1, project=None, local_only=False, curdir=''):
         if not project:
             project = 'default'
         self.project = project
+        self.curdir = curdir
         self.wdir = ensure_wdir(project)
 
         # build up self.hosts
@@ -50,12 +52,11 @@ class Recruiter(object):
             print("[fjd-recruiter] Not sufficiently intialised to hire!")
             return
         self.fire(local_only=True)
+        curdir = True and self.curdir or os.path.abspath(os.curdir)
         for host in self.hosts:
             if host['name'] == 'localhost':
                 for worker in range(host['workers']):
-                    sid = "{}-{}-{}".format(self.project,
-                                            self.hosts.index(host) + 1,
-                                            worker + 1)
+                    sid = "{}-{}-{}".format(self.project, gethostname(), worker + 1)
                     # We create screens manually (not with screenutils), as
                     # we get more precision this way (making an .rc file)
                     rcfile = '{}/screenrcs/{}.rc'.format(self.wdir, sid)
@@ -65,18 +66,17 @@ class Recruiter(object):
 logfile {}
 logfile flush 2'''.format(logfile)) # last line flushes to logfile every 2 seconds
                     rcf.close()
-                    subprocess.call('bgscreen {} {} "fjd-worker --project {}"'\
-                                .format(sid, rcfile, self.project), shell=True)
-                    #os.system('bgscreen {} "fjd-worker --project {}"'\
-                    #          .format(sid, self.project))
+                    subprocess.call('bgscreen {} {} "cd {}; fjd-worker --project {}"'\
+                            .format(sid, rcfile, curdir, self.project), shell=True)
                 print('[fjd-recruiter] Hired {} workers in project "{}".'\
                        .format(host['workers'], self.project))
             else:
                 # for remote hosts, call the recruiter over there
                 ssh_client = mk_ssh_client(host['name'], getuser())
                 print("[fjd-recruiter] Host {}: {}".format(host['name'],
-                        ssh(ssh_client, 'fjd-recruiter --project {} --local-only hire {}'\
-                            .format(self.project, host['workers'])).strip().replace('\n', '\n        ....')))
+                    ssh(ssh_client, 'fjd-recruiter --project {} --local-only --curdir {} hire {}'\
+                          .format(self.project, curdir, host['workers']))\
+                        .strip().replace('\n', '\n        ....')))
 
     def fire(self, local_only=False):
         if len(self.hosts) == 0:
