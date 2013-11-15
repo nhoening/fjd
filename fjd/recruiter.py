@@ -3,7 +3,7 @@
 import os
 import os.path as osp
 from getpass import getuser
-from subprocess import Popen
+import subprocess
 from screenutils import list_screens #, Screen
 from ConfigParser import ConfigParser
 
@@ -56,13 +56,19 @@ class Recruiter(object):
                     sid = "{}-{}-{}".format(self.project,
                                             self.hosts.index(host) + 1,
                                             worker + 1)
-                    # This below is not working well (screen blinks), and 
-                    # with the manual way we get more precision in creating screens
-                    #s = Screen(sid, True)
-                    #s.send_commands('bash')
-                    #s.send_commands('python fjd/worker.py')
-                    Popen('bgscreen {} "fjd-worker --project {}"'\
-                              .format(sid, self.project), shell=True).wait()
+                    # We create screens manually (not with screenutils), as
+                    # we get more precision this way (making an .rc file)
+                    rcfile = '{}/screenrcs/{}.rc'.format(self.wdir, sid)
+                    logfile = '{}/screenlogs/{}.log'.format(self.wdir, sid)
+                    rcf = open(rcfile, 'w')
+                    rcf.write('''deflog on
+logfile {}
+logfile flush 2'''.format(logfile)) # last line flushes to logfile every 2 seconds
+                    rcf.close()
+                    subprocess.call('bgscreen {} {} "fjd-worker --project {}"'\
+                                .format(sid, rcfile, self.project), shell=True)
+                    #os.system('bgscreen {} "fjd-worker --project {}"'\
+                    #          .format(sid, self.project))
                 print('[fjd-recruiter] Hired {} workers in project "{}".'\
                        .format(host['workers'], self.project))
             else:

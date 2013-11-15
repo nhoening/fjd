@@ -1,8 +1,8 @@
 #!/bin/bash
 # run a cmd in a background screen
-# $1 is a screen identifier, $2 is the comand
+# $1 is a screen identifier, $2 is the rc file name, $3 is the comand
 
 
-screen -d -m -S $1 -L
+screen -d -m -S $1 -c $2
 sleep 1
-screen -p 0 -S $1 -X stuff "$2"
+screen -p 0 -S $1 -X stuff "$3"

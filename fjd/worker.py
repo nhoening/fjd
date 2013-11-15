@@ -3,7 +3,7 @@
 import os
 import time
 from ConfigParser import ConfigParser
-from subprocess import Popen
+import subprocess
 
 from fjd.core_process import CoreProcess
 from fjd.utils import ensure_wdir
@@ -13,7 +13,7 @@ class Worker(CoreProcess):
     '''
     A worker process
     '''
-    
+
     def __init__(self, interval=.1, project=None):
         if not project:
             project = 'default'
@@ -34,13 +34,13 @@ class Worker(CoreProcess):
                 # A job is a config file
                 conf = ConfigParser() 
                 conf.read('{}/jobpod/{}'.format(self.wdir, job))
-                exe = conf.get('control', 'executable') 
-                log = conf.get('control', 'logfile') 
+                exe = conf.get('control', 'executable')
+                exe_log = conf.get('control', 'logfile')
                 # remove job from pod, execute task and re-announce myself
                 cmd = 'touch {log}; {exe} {wdir}/jobpod/{job}; rm {wdir}/jobpod/{job}; '\
                       'touch {wdir}/workerqueue/{id}.worker'.format(exe=exe,
-                                    job=job, wdir=self.wdir, log=log, id=self.id)
-                Popen(cmd, shell=True).wait()
+                                    job=job, wdir=self.wdir, log=exe_log, id=self.id)
+                subprocess.call(cmd, shell=True)
                 print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))
             time.sleep(interval)
 

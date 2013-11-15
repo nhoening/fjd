@@ -52,18 +52,18 @@ First, you need to have python 2.7 or above, which is the case on almost all sys
 If you do not have enough privileges (look for something like "Permission denied" in the output), install locally (for your user account only)::
 
     $ pip install fjd --user
-    
+
 If you do not have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_, which should help to install all needed things. Download it and make it executable::
-    
+
     $ wget https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL
     $ chmod +x INSTALL
-    
+
 Now you can install system-wide::
-    
+
     $ ./INSTALL
 
-or, if you do not have enough privileges, you can also install locally::
-    
+or, if you do not have root privileges, you can also install locally::
+
     $ source INSTALL --user
 
 **Note** - If you installed locally, this should be added to your ``~/.bashrc`` or ``~/.profile`` file::
@@ -173,10 +173,12 @@ Workers are Unix screen sessions, you can see them by typing::
 
     $ screen -ls
 
-and inspect them if you want (a feature is planned to give easy access to 
-log output from the screen sessions).
+and inspect them if you want. As attaching to screen sessions is cumbersome
+and ``fjd`` also might close them before you have a chance to see what went wrong,
+``fjd`` logs screen output to ``~/.fjd/<project>/screenlogs`` (each screen has
+its own log file).
 
-Here is the log from a screen session of a worker if you're interested::
+Here is an example log from a screen session of a worker::
 
     $ fjd-worker --project default
     [fjd-worker] Started with ID nics-macbook.fritz.box_1382522062.31.
@@ -190,6 +192,10 @@ because you aborted the dispatcher before he could tell the recruiter to clean
 up), then you can always fire workers by hand::
 
     $ fjd-recruiter fire
+
+or::
+
+    $ fjd-recruiter --project <my-project> fire
 
 
 
@@ -223,9 +229,9 @@ identifier ``remote-example``::
     cp remote.conf ~/.fjd/remote-example/remote.conf
     fjd-recruiter --project remote-example hire
     fjd-dispatcher --project remote-example 
- 
+
 If you run this example, the output you'll see should be similar to this::
- 
+
     $ cd fjd/example
     $ ./run-remote-example.sh 
     [fjd-recruiter] Hired 3 workers in project "remote-example".
