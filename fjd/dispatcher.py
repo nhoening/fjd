@@ -31,6 +31,7 @@ class Dispatcher(CoreProcess):
             jq = os.listdir('{}/jobqueue'.format(self.wdir))
             jp = os.listdir('{}/jobpod'.format(self.wdir))
             wq = os.listdir('{}/workerqueue'.format(self.wdir))
+            self.sort_jobqueue(jq)
             if len(jq) > 0:
                 sys.stdout.write("\r[fjd-dispatcher] Found {} job(s) and {} free worker(s)..."\
                        .format(len(jq), len(wq)))
@@ -48,3 +49,9 @@ class Dispatcher(CoreProcess):
                 do_work = False
         self.wrap_up()
 
+    def sort_jobqueue(self, jobqueue):
+        '''
+        Sort jobs - overwrite to enable dynamic queueing.
+        Only an idea as of now, see issue #13
+        '''
+        pass
