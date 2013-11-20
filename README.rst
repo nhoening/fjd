@@ -36,7 +36,7 @@ Usage
 
     $ fjd-dispatcher
 
-Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy. This goes on until the job queue is empty.
+Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy.
 
 You can configure a number of hosts in your network and how many workers should be 
 running on each (see an example of this below).
@@ -154,14 +154,9 @@ And this is output similar to what you should see::
     [fjd-dispatcher] Found 3 job(s) and 1 worker(s)...
     [fjd-dispatcher] Found 2 job(s) and 3 worker(s)...
     [fjd-dispatcher] No (more) jobs.
-    [fjd-recruiter] Fired 4 workers in project "default".
 
 
-Note that ``fjd-dispatcher`` is started after jobs are created because per default, 
-it will fire workers (kill screen sessions) and terminate itself once it finds 
-the queue of jobs being empty. This behaviour can be overwritten with a parameter
-if needed and then you could have the dispacther running and push jobs in the 
-queue whenever you like.
+You can cancel the ``fjd-dispatcher`` process now (i.e. hit CTRL-C).
 
 And you'll see the results, the log files written by our example jobs::
 
@@ -174,7 +169,8 @@ Workers are Unix screen sessions, you can see them by typing::
     $ screen -ls
 
 and inspect them if you want. As attaching to screen sessions is cumbersome
-and ``fjd`` also might close them before you have a chance to see what went wrong,
+and ``fjd`` can also close them before you have a chance to see what went wrong
+(this is an option you can set, see next example below),
 ``fjd`` logs screen output to ``~/.fjd/<project>/screenlogs`` (each screen has
 its own log file).
 
@@ -187,15 +183,16 @@ Here is an example log from a screen session of a worker::
     [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
     [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
 
-By the way, if screen sessions are running and you want them to stop (maybe
-because you aborted the dispatcher before he could tell the recruiter to clean
-up), then you can always fire workers by hand::
+By the way, if screen sessions are running and you want them to stop,
+then you can always fire workers by hand::
 
     $ fjd-recruiter fire
 
 or::
 
     $ fjd-recruiter --project <my-project> fire
+
+If you start a new dispatcher, it will first clean up ("fire") old screen sessions.
 
 
 
@@ -228,7 +225,7 @@ identifier ``remote-example``::
     python create_jobs.py remote-example
     cp remote.conf ~/.fjd/remote-example/remote.conf
     fjd-recruiter --project remote-example hire
-    fjd-dispatcher --project remote-example 
+    fjd-dispatcher --project remote-example --end_on_empty_queue
 
 If you run this example, the output you'll see should be similar to this::
 
@@ -243,6 +240,14 @@ If you run this example, the output you'll see should be similar to this::
     [fjd-recruiter] Fired 3 workers in project "remote-example".
     [fjd-recruiter] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
 
+
+**Note**  Unlike in previous example, I told the ``fjd-dispatcher`` process
+to fire workers (kill screen sessions) and terminate itself once it finds 
+the queue of jobs being empty.
+
 **Note** - If you normally have to type in a password to login to a remote machine via SSH,
-you'll have to do this here, as well. Some SSH configuration can go a long way to ease your life,
-e.g. by key management or the ControlAuto option. Ask your local IT guy. 
+you'll have to do this here, as well. You can configure passwordless logon by
+putting a public key in ~/.ssh/authorized_keys. For the shared-home directory 
+setting we use ``fjd`` for, this makes a lot of sense, as you stay within your LAN anyway.
+In general, some SSH configuration can go a long way to ease your life,
+e.g. by connection sharing through the ControlAuto option. Search the web or ask your local IT guy.

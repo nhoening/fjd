@@ -32,7 +32,7 @@ class Dispatcher(CoreProcess):
             jp = os.listdir('{}/jobpod'.format(self.wdir))
             wq = os.listdir('{}/workerqueue'.format(self.wdir))
             if len(jq) > 0:
-                sys.stdout.write("\r[fjd-dispatcher] Found {} job(s) and {} free worker(s)..."\
+                sys.stdout.write("\r[fjd-dispatcher] Found {} job(s) and {} free worker(s)...   "\
                        .format(len(jq), len(wq)))
                 sys.stdout.flush()
                 for _ in range(min(len(jq), len(wq))):
@@ -41,10 +41,11 @@ class Dispatcher(CoreProcess):
                     os.rename('{wdir}/jobqueue/{j}'.format(wdir=self.wdir, j=job),
                               '{wdir}/jobpod/{w}'.format(wdir=self.wdir, w=worker))
                     os.remove('{wdir}/workerqueue/{w}'.format(wdir=self.wdir, w=worker))
-            elif len(jp) == 0 and end_on_empty_queue:
-                # if no queued jobs and no jobs in progress, we can finish
-                print("\n[fjd-dispatcher] No (more) jobs.")
-                Recruiter(project=project).fire()
-                do_work = False
+            elif len(jp) == 0:
+                sys.stdout.write("\r[fjd-dispatcher] No (more) jobs.                               ")
+                sys.stdout.flush()
+                if end_on_empty_queue:
+                    Recruiter(project=project).fire()
+                    do_work = False
         self.wrap_up()
 
