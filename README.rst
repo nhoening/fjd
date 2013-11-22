@@ -92,16 +92,19 @@ A little bit more detail about the ``fjd`` internals:
 The ``fjd-recruiter`` creates worker threads on one or more machines. The ``fjd-worker`` processes announce themselves in the
 ``workerqueue`` directory. The ``fjd-dispatcher`` finds your jobs in the ``jobqueue`` directory and pairs a job with an available worker.
 It then removes those entries from the ``jobqueue`` and ``workerqueue`` directories and creates a new entry in ``jobpods``, where workers will
-pick up their assignments. 
+pick up their assignments.
 
-All of these directories exist in ``~/.fjd`` and will of course be created if they do not yet exist.
+Then, the dispatcher calls your executable script and passes the file that describes the job to it as parameter on the shell.
+Your script simply has to read the job file and act accordingly.
+
+All of these directories mentioned above exist in ``~/.fjd`` and will of course be created if they do not yet exist.
 
 
 Job files
 ------------
 
-A job file should adhere to the general configuration file standard, where ``fjd``
-only has some requirements for the ``control`` section, where you specify which
+A job file should adhere to the general `INI-file standard <http://en.wikipedia.org/wiki/INI_file>`_.
+``fjd`` only has some requirements for the ``control`` section, in which you specify which
 command to execute and where results should go. Here is an example::
 
     [control]
@@ -111,24 +114,30 @@ command to execute and where results should go. Here is an example::
     [params]
     param1: value0
 
-Your executable (the "job") gets this configuration file passed as a command line argument.
+Your executable (the "job") gets this configuration file passed as a command line argument, so this would be called on the shell::
+
+    python example/ajob.py <absolute path to the job file>
+
 This way, it can see for itself in which logfile to write to.
+In addition, you can put other job-specific configuration in there for the executable
+to see, as I did here in the ``[params]``-section (I repeat: only the ``[control]``-section
+is required by ``fjd``).
 
 Take care to get the relative paths correct (or simply make them absolute):
-If the paths are relative, the path to the executable should be relative to the workers
-working directory, whereas the path to the logfile should be relative to the jobs
-working directory.
+If the paths are relative, they should be relative to the directory in which you
+start the ``fjd-dispatcher``.
 
-In addition, you can put other job-specific configuration in there for the executable
-to see, as I did here in the ``[params]``-section (in fact, only the ``[control]``-section
-is ``fjd``-specific).
+To add this job to the job queue, we would place that file into ``~/.fjd/default/jobqueue``
+and the ``fjd-dispatcher`` will find it there. 
+
+**Note** You can specify a project name (example below) and then "default" would be replaced by that.
 
 
 An example (on your local machine)
 ------------------------------------
 
 You can see how it all comes together by looking at the simple example in the ``example``
-directory where there is one script that represents a job (`example/ajob.py <https://raw.github.com/nhoening/fjd/master/fjd/example/ajob.py>`_) 
+directory on github. There is one script that represents a job (`example/ajob.py <https://raw.github.com/nhoening/fjd/master/fjd/example/ajob.py>`_) 
 and one that creates ten jobs similar to the one we saw above and puts them in
 the queue (`example/create_jobs.py <https://raw.github.com/nhoening/fjd/master/fjd/example/create_jobs.py>`_).
 
@@ -241,7 +250,7 @@ If you run this example, the output you'll see should be similar to this::
     [fjd-recruiter] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
 
 
-**Note**  Unlike in previous example, I told the ``fjd-dispatcher`` process
+**Note**  Unlike in previous example, this time I told the ``fjd-dispatcher`` process
 to fire workers (kill screen sessions) and terminate itself once it finds 
 the queue of jobs being empty.
 
