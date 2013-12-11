@@ -3,6 +3,7 @@
 import sys
 import os
 import time
+import signal
 
 from fjd import CoreProcess
 from fjd import Recruiter
@@ -24,6 +25,12 @@ class Dispatcher(CoreProcess):
         self.start_up()
 
         print('[fjd-dispatcher] Started on project "{}"'.format(project))
+
+        def signal_handler(signal, frame):
+            ''' gently exiting, e.g. when CTRL-C was pressed.  '''
+            sys.stdout.write('\n[fjd-dispatcher] Received Exit signal. Bye.\n')
+            sys.exit(0)
+        signal.signal(signal.SIGINT, signal_handler)
 
         do_work = True
         while do_work:
