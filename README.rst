@@ -45,7 +45,7 @@ running on each (see an example of this below).
 Installation
 -------------
 
-First, you need to have python 2.7 or above, which is the case on almost all systems these days. Then::
+First, you need to have python 2.7, which the default python on almost all systems these days (note: python 3.x support is not there yet, but close; see issue 10 on github). Then::
 
     $ pip install fjd
 

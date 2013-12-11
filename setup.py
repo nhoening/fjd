@@ -62,7 +62,7 @@ setup(
     platforms='Unix',
     test_suite='fjd.test.test_fjd',
     classifiers = [
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
         'Development Status :: 4 - Beta',
         'Natural Language :: English',
         'Environment :: Console',
