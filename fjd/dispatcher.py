@@ -28,7 +28,11 @@ class Dispatcher(CoreProcess):
 
         def signal_handler(signal, frame):
             ''' gently exiting, e.g. when CTRL-C was pressed.  '''
-            sys.stdout.write('\n[fjd-dispatcher] Received Exit signal. Bye.\n')
+            sys.stdout.write('\n[fjd-dispatcher] Received Exit signal. Exiting ...\n')
+            print('[fjd-dispatcher] Should I fire all workers in project {}? [Y|n]'\
+                        .format(project))
+            if raw_input().lower() in ["", "y"]:
+                Recruiter(project=project).fire()
             sys.exit(0)
         signal.signal(signal.SIGINT, signal_handler)
 
