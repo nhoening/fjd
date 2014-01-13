@@ -36,7 +36,7 @@ Usage
 
     $ fjd-dispatcher
 
-Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy. This goes on until the job queue is empty.
+Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy.
 
 You can configure a number of hosts in your network and how many workers should be 
 running on each (see an example of this below).
@@ -45,7 +45,7 @@ running on each (see an example of this below).
 Installation
 -------------
 
-First, you need to have python 2.7 or above, which is the case on almost all systems these days. Then::
+First, you need to have python 2.7, which the default python on almost all systems these days (note: python 3.x support is not there yet, but close; see issue 10 on github). Then::
 
     $ pip install fjd
 
@@ -92,16 +92,19 @@ A little bit more detail about the ``fjd`` internals:
 The ``fjd-recruiter`` creates worker threads on one or more machines. The ``fjd-worker`` processes announce themselves in the
 ``workerqueue`` directory. The ``fjd-dispatcher`` finds your jobs in the ``jobqueue`` directory and pairs a job with an available worker.
 It then removes those entries from the ``jobqueue`` and ``workerqueue`` directories and creates a new entry in ``jobpods``, where workers will
-pick up their assignments. 
+pick up their assignments.
 
-All of these directories exist in ``~/.fjd`` and will of course be created if they do not yet exist.
+Then, the dispatcher calls your executable script and passes the file that describes the job to it as parameter on the shell.
+Your script simply has to read the job file and act accordingly.
+
+All of these directories mentioned above exist in ``~/.fjd`` and will of course be created if they do not yet exist.
 
 
 Job files
 ------------
 
-A job file should adhere to the general configuration file standard, where ``fjd``
-only has some requirements for the ``control`` section, where you specify which
+A job file should adhere to the general `INI-file standard <http://en.wikipedia.org/wiki/INI_file>`_.
+``fjd`` only has some requirements for the ``control`` section, in which you specify which
 command to execute and where results should go. Here is an example::
 
     [control]
@@ -111,24 +114,30 @@ command to execute and where results should go. Here is an example::
     [params]
     param1: value0
 
-Your executable (the "job") gets this configuration file passed as a command line argument.
+Your executable (the "job") gets this configuration file passed as a command line argument, so this would be called on the shell::
+
+    python example/ajob.py <absolute path to the job file>
+
 This way, it can see for itself in which logfile to write to.
+In addition, you can put other job-specific configuration in there for the executable
+to see, as I did here in the ``[params]``-section (I repeat: only the ``[control]``-section
+is required by ``fjd``).
 
 Take care to get the relative paths correct (or simply make them absolute):
-If the paths are relative, the path to the executable should be relative to the workers
-working directory, whereas the path to the logfile should be relative to the jobs
-working directory.
+If the paths are relative, they should be relative to the directory in which you
+start the ``fjd-dispatcher``.
 
-In addition, you can put other job-specific configuration in there for the executable
-to see, as I did here in the ``[params]``-section (in fact, only the ``[control]``-section
-is ``fjd``-specific).
+To add this job to the job queue, we would place that file into ``~/.fjd/default/jobqueue``
+and the ``fjd-dispatcher`` will find it there. 
+
+**Note** You can specify a project name (example below) and then "default" would be replaced by that.
 
 
 An example (on your local machine)
 ------------------------------------
 
 You can see how it all comes together by looking at the simple example in the ``example``
-directory where there is one script that represents a job (`example/ajob.py <https://raw.github.com/nhoening/fjd/master/fjd/example/ajob.py>`_) 
+directory on github. There is one script that represents a job (`example/ajob.py <https://raw.github.com/nhoening/fjd/master/fjd/example/ajob.py>`_) 
 and one that creates ten jobs similar to the one we saw above and puts them in
 the queue (`example/create_jobs.py <https://raw.github.com/nhoening/fjd/master/fjd/example/create_jobs.py>`_).
 
@@ -154,14 +163,9 @@ And this is output similar to what you should see::
     [fjd-dispatcher] Found 3 job(s) and 1 worker(s)...
     [fjd-dispatcher] Found 2 job(s) and 3 worker(s)...
     [fjd-dispatcher] No (more) jobs.
-    [fjd-recruiter] Fired 4 workers in project "default".
 
 
-Note that ``fjd-dispatcher`` is started after jobs are created because per default, 
-it will fire workers (kill screen sessions) and terminate itself once it finds 
-the queue of jobs being empty. This behaviour can be overwritten with a parameter
-if needed and then you could have the dispacther running and push jobs in the 
-queue whenever you like.
+You can cancel the ``fjd-dispatcher`` process now (i.e. hit CTRL-C).
 
 And you'll see the results, the log files written by our example jobs::
 
@@ -174,7 +178,8 @@ Workers are Unix screen sessions, you can see them by typing::
     $ screen -ls
 
 and inspect them if you want. As attaching to screen sessions is cumbersome
-and ``fjd`` also might close them before you have a chance to see what went wrong,
+and ``fjd`` can also close them before you have a chance to see what went wrong
+(this is an option you can set, see next example below),
 ``fjd`` logs screen output to ``~/.fjd/<project>/screenlogs`` (each screen has
 its own log file).
 
@@ -187,15 +192,16 @@ Here is an example log from a screen session of a worker::
     [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: I found a job.
     [fjd-worker] Worker nics-macbook.fritz.box_1382522062.31: Finished my job.
 
-By the way, if screen sessions are running and you want them to stop (maybe
-because you aborted the dispatcher before he could tell the recruiter to clean
-up), then you can always fire workers by hand::
+By the way, if screen sessions are running and you want them to stop,
+then you can always fire workers by hand::
 
     $ fjd-recruiter fire
 
 or::
 
     $ fjd-recruiter --project <my-project> fire
+
+If you start a new dispatcher, it will first clean up ("fire") old screen sessions.
 
 
 
@@ -228,7 +234,7 @@ identifier ``remote-example``::
     python create_jobs.py remote-example
     cp remote.conf ~/.fjd/remote-example/remote.conf
     fjd-recruiter --project remote-example hire
-    fjd-dispatcher --project remote-example 
+    fjd-dispatcher --project remote-example --end_on_empty_queue
 
 If you run this example, the output you'll see should be similar to this::
 
@@ -243,6 +249,14 @@ If you run this example, the output you'll see should be similar to this::
     [fjd-recruiter] Fired 3 workers in project "remote-example".
     [fjd-recruiter] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
 
+
+**Note**  Unlike in previous example, this time I told the ``fjd-dispatcher`` process
+to fire workers (kill screen sessions) and terminate itself once it finds 
+the queue of jobs being empty.
+
 **Note** - If you normally have to type in a password to login to a remote machine via SSH,
-you'll have to do this here, as well. Some SSH configuration can go a long way to ease your life,
-e.g. by key management or the ControlAuto option. Ask your local IT guy. 
+you'll have to do this here, as well. You can configure passwordless logon by
+putting a public key in ~/.ssh/authorized_keys. For the shared-home directory 
+setting we use ``fjd`` for, this makes a lot of sense, as you stay within your LAN anyway.
+In general, some SSH configuration can go a long way to ease your life,
+e.g. by connection sharing through the ControlAuto option. Search the web or ask your local IT guy.

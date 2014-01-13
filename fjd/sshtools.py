@@ -38,7 +38,7 @@ def ssh(client, cmd, ignore=[]):
         if yell_it and e_line != "":
             err_out += '%s\n' % e_line
     if err_out.strip() != "":
-        print("[FJD] Error while doing stuff on server: {}".format(err_out))
+        print("[fjd-ssh] Error while doing stuff on server: {}".format(err_out))
     return stdout.read()
 
 
@@ -57,10 +57,10 @@ def mk_ssh_client(hostname, username):
     try:
         ssh_client.connect(hostname, username=username)
     except (paramiko.AuthenticationException, paramiko.SSHException):
-        print "[FJD] Could not connect to host '%s' as user '%s' with no password." % (hostname, username)
+        print "[fjd-ssh] Could not connect to host '%s' as user '%s' with no password." % (hostname, username)
         print "          If you want password-less logon, please check your RSA key or shared/remembered connection setup."
     except Exception, e:
-        print("[FJD] WARNING: Error while connecting with host {}: {}. ".format(hostname, e))
+        print("[fjd-ssh] WARNING: Error while connecting with host {}: {}. ".format(hostname, e))
         if "Unknown server" in str(e):
             print "          Is it a known host (look in ~/.ssh/known_hosts)?"
         return None
@@ -68,7 +68,7 @@ def mk_ssh_client(hostname, username):
         return ssh_client
     ssh_client = None
     while ssh_client is None:
-        print("[FJD] Logging in user '{}' on host '{}' now (type 'exit' to abort): ".format(username, hostname))
+        print("[fjd-ssh] Logging in user '{}' on host '{}' now (type 'exit' to abort): ".format(username, hostname))
         passwd = getpass()
         if passwd == 'exit':
             break
@@ -77,10 +77,10 @@ def mk_ssh_client(hostname, username):
         try:
             ssh_client.connect(hostname, username=username, password=passwd)
         except paramiko.AuthenticationException:
-            print("[FJD] Authentication was not successful.")
+            print("[fjd-ssh] Authentication was not successful.")
             ssh_client = None
         except Exception, e:
-            print("[FJD] WARNING: Error while connecting with host {}: {}".format((hostname, e)))
+            print("[fjd-ssh] WARNING: Error while connecting with host {}: {}".format((hostname, e)))
             ssh_client = None
     return ssh_client
 

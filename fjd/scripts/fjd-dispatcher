@@ -8,7 +8,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Start a worker process.')
     parser.add_argument('--interval', type=float, default=.1,
                         help="The interval (in seconds) between polling for jobs and workers.")
-    parser.add_argument('--end_on_empty_queue', type=bool, default=True,
+    parser.add_argument('--end_on_empty_queue', action='store_true',
                     help="If True, the dispatcher stops if no jobs are queued.")
     parser.add_argument('--project', type=str, help="Custom identifier (useful"\
                                   " when fjd is used to run several projects).")
