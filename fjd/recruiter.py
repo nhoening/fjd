@@ -92,7 +92,7 @@ logfile flush 2'''.format(logfile)) # last line flushes to logfile every 2 secon
                 if fired > 0:
                     for f in os.listdir('{}/workerqueue'.format(self.wdir)):
                         os.remove('{}/workerqueue/{}'.format(self.wdir, f))
-                    print('[fjd-recruiter] Fired {} workers in project "{}".'\
+                    print('[fjd-recruiter] Fired {} worker(s) in project "{}".'\
                             .format(fired, self.project))
                 elif debug:
                     print('[fjd-recruiter] No workers busy (yet) in project "{}".'\
