@@ -38,8 +38,8 @@ class Worker(CoreProcess):
                 exe = conf.get('control', 'executable')
                 exe_log = conf.get('control', 'logfile')
                 # make log file and execute task
-                cmd = 'touch {log}; {exe} {wdir}/jobpod/{job}; '\
-                       .format(log=exe_log, exe=exe, wdir=self.wdir, job=job)
+                cmd = 'touch {log}; nice -n {nice} {exe} {wdir}/jobpod/{job}; '\
+                 .format(log=exe_log, nice=9, exe=exe, wdir=self.wdir, job=job)
                 subprocess.call(cmd, shell=True)
                 print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))
                 # remove the job from pod (signaling it is done) + re-announce myself
