@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import os.path as osp
 from getpass import getuser
 import subprocess
 from socket import gethostname
 from screenutils import list_screens #, Screen
 from ConfigParser import ConfigParser
+import signal
 
 from fjd.sshtools import mk_ssh_client, ssh
 from fjd.utils import ensure_wdir
@@ -48,9 +50,19 @@ class Recruiter(object):
                     .format(','.join([h['name'] for h in self.hosts])))
 
     def hire(self):
+        def signal_handler(signal, frame):
+            ''' gently exiting, e.g. when CTRL-C was pressed.  '''
+            sys.stdout.write('\n[fjd-recruiter] Received Exit signal while '\
+                             'hiring. Firing workers in project {}...\n'\
+                           .format(self.project))
+            self.fire()
+            sys.exit(0)
+        signal.signal(signal.SIGINT, signal_handler)
+
         if len(self.hosts) == 0:
             print("[fjd-recruiter] Not sufficiently intialised to hire!")
             return
+
         self.fire(local_only=True)
         curdir = True and self.curdir or os.path.abspath(os.curdir)
         for host in self.hosts:
