@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-from psutil import NUM_CPUS
+from multiprocessing import cpu_count
 
 from fjd import Recruiter
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     parser.add_argument('--curdir', type=str, help="Current directory workers should cd into before starting.")
     hf_parsers = parser.add_subparsers(title='action', dest='action')
     hp = hf_parsers.add_parser('hire', help='Hire some workers')
-    hp.add_argument('num_workers', type=int, nargs='?', default=max(1, NUM_CPUS - 1),
+    hp.add_argument('num_workers', type=int, nargs='?', default=max(1, cpu_count() - 1),
                     help="How many workers are needed.")
     hf_parsers.add_parser('fire', help='Fire everyone (in this project)')
 
