@@ -60,6 +60,7 @@ class Dispatcher(CoreProcess):
                 sys.stdout.write("\r[fjd-dispatcher] Queue is empty and all jobs have finished.                          ")
                 sys.stdout.flush()
                 if end_on_empty_queue:
+                    sys.stdout.write("\n")
                     Recruiter(project=project).fire()
                     do_work = False
         self.wrap_up()
