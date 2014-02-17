@@ -4,6 +4,7 @@ import sys
 import os
 import time
 import signal
+import subprocess
 
 from fjd import CoreProcess
 from fjd import Recruiter
@@ -18,7 +19,8 @@ class Dispatcher(CoreProcess):
     to workers by moving jobs to the `jobpod` directory. 
     '''
 
-    def __init__(self, interval=.1, project=None, end_on_empty_queue=True):
+    def __init__(self, interval=.1, project=None, end_when_jobs_are_done=True,
+                 end_callback=None):
         if not project:
             project = 'default'
         self.wdir = ensure_wdir(project)
@@ -59,10 +61,13 @@ class Dispatcher(CoreProcess):
             else:  # all jobs are done
                 sys.stdout.write("\r[fjd-dispatcher] Queue is empty and all jobs have finished.                          ")
                 sys.stdout.flush()
-                if end_on_empty_queue:
+                if end_when_jobs_are_done:
                     sys.stdout.write("\n")
                     Recruiter(project=project).fire()
                     do_work = False
+                    if end_callback:
+                        subprocess.call(end_callback, shell=True).wait()
+
         self.wrap_up()
 
     def sort_jobqueue(self, jobqueue):

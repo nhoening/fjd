@@ -234,7 +234,7 @@ identifier ``remote-example``::
     python create_jobs.py remote-example
     cp remote.conf ~/.fjd/remote-example/remote.conf
     fjd-recruiter --project remote-example hire
-    fjd-dispatcher --project remote-example --end_on_empty_queue
+    fjd-dispatcher --project remote-example --end_when_jobs_are_done
 
 If you run this example, the output you'll see should be similar to this::
 
@@ -250,12 +250,12 @@ If you run this example, the output you'll see should be similar to this::
     [fjd-recruiter] Host hyuga.sen.cwi.nl: [fjd-recruiter] Fired 5 workers in project "remote-example".
 
 
-**Note**  Unlike in previous example, this time I told the ``fjd-dispatcher`` process
+**Note**  Unlike in the previous example, this time I told the ``fjd-dispatcher`` process
 to fire workers (kill screen sessions) and terminate itself once it finds 
-the queue of jobs being empty.
+that all jobs are finished (via ``--end_when_jobs_are_done``).
 
 **Note** - If you normally have to type in a password to login to a remote machine via SSH,
-you'll have to do this here, as well. You can configure passwordless logon by
+you'll have to do this here, as well. You can configure passwordless login by
 putting a public key in ~/.ssh/authorized_keys. For the shared-home directory 
 setting we use ``fjd`` for, this makes a lot of sense, as you stay within your LAN anyway.
 In general, some SSH configuration can go a long way to ease your life,
