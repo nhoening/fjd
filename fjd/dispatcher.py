@@ -20,7 +20,7 @@ class Dispatcher(CoreProcess):
     '''
 
     def __init__(self, interval=.1, project=None, end_when_jobs_are_done=True,
-                 end_callback=None):
+                 end_callback=None, status_only=False):
         if not project:
             project = 'default'
         self.wdir = ensure_wdir(project)
@@ -41,20 +41,23 @@ class Dispatcher(CoreProcess):
         do_work = True
         while do_work:
             time.sleep(interval)
+            if status_only:  # just show info once, don't do anything else
+                do_work = False
             jq = os.listdir('{}/jobqueue'.format(self.wdir))
             jp = os.listdir('{}/jobpod'.format(self.wdir))
             wq = os.listdir('{}/workerqueue'.format(self.wdir))
             self.sort_jobqueue(jq)
             if len(jq) > 0:  # more jobs waiting for workers
-                sys.stdout.write("\r[fjd-dispatcher] {} job(s) waiting in the queue. Currently {} worker(s) are free...  "\
+                sys.stdout.write("\r[fjd-dispatcher] {} job(s) waiting in the queue. Currently {} worker(s) are free ...  "\
                        .format(len(jq), len(wq)))
                 sys.stdout.flush()
-                for _ in range(min(len(jq), len(wq))):
-                    worker = wq.pop()
-                    job = jq.pop()
-                    os.rename('{wdir}/jobqueue/{j}'.format(wdir=self.wdir, j=job),
-                              '{wdir}/jobpod/{w}'.format(wdir=self.wdir, w=worker))
-                    os.remove('{wdir}/workerqueue/{w}'.format(wdir=self.wdir, w=worker))
+                if not status_only:
+                    for _ in range(min(len(jq), len(wq))):
+                        worker = wq.pop()
+                        job = jq.pop()
+                        os.rename('{wdir}/jobqueue/{j}'.format(wdir=self.wdir, j=job),
+                                '{wdir}/jobpod/{w}'.format(wdir=self.wdir, w=worker))
+                        os.remove('{wdir}/workerqueue/{w}'.format(wdir=self.wdir, w=worker))
             elif len(jp) > 0:  # some jobs are still running
                 sys.stdout.write("\r[fjd-dispatcher] Queue is empty. Waiting for remaining {} job(s) to finish ...        ".format(len(jp)))
                 sys.stdout.flush()

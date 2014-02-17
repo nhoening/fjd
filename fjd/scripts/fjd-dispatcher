@@ -11,8 +11,10 @@ if __name__ == '__main__':
     parser.add_argument('--end_when_jobs_are_done', action='store_true',
                     help="If True, the dispatcher stops if no jobs are queued.")
     parser.add_argument('--end_callback', type=str, help="if end_when_jobs_are_done"\
-                         " is True, call this command when jobsa are done,"\
+                         " is True, call this command when jobs are done,"\
                          " before quitting.")
+    parser.add_argument('--status_only', action='store_true',
+                    help="Only display state of jobs and then quit.")
 
     parser.add_argument('--project', type=str, help="Custom identifier (useful"\
                                   " when fjd is used to run several projects).")
