@@ -69,7 +69,7 @@ class Dispatcher(CoreProcess):
                     Recruiter(project=project).fire()
                     do_work = False
                     if end_callback:
-                        subprocess.call(end_callback, shell=True).wait()
+                        subprocess.call(end_callback, shell=True)
 
         self.wrap_up()
 
