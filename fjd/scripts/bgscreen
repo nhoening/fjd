@@ -3,5 +3,5 @@
 # $1 is a screen identifier, $2 is the rc file name, $3 is the comand
 
 screen -d -m -S $1 -c $2
-sleep 1
+sleep .3
 screen -p 0 -S $1 -X stuff "$3"
