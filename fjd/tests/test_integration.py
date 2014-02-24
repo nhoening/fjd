@@ -12,6 +12,8 @@ class TestBasicExample(object):
 
     @pytest.fixture(scope='module')
     def run_example(self):
+        fjd_dir = os.path.expanduser('~/.fjd/default')
+        rmtree('{}/screenlogs'.format(fjd_dir))
         os.chdir(self.ex_dir)
         rmtree('logfiles')
         os.mkdir('logfiles')
@@ -21,8 +23,6 @@ class TestBasicExample(object):
 
     def test_jobs(self, run_example):
         fjd_dir = os.path.expanduser('~/.fjd/default')
-        print('{}/screenlogs'.format(fjd_dir))
-        print(os.listdir(fjd_dir))
         assert(os.path.exists('{}/screenlogs'.format(fjd_dir)))
         logs = os.listdir('{}/screenlogs'.format(fjd_dir))
         assert(len(logs) == 3)

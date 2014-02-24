@@ -20,5 +20,6 @@ if __name__ == '__main__':
                                   " when fjd is used to run several projects).")
     args = parser.parse_args()
     Dispatcher(project=args.project, interval=args.interval,
-               end_when_jobs_are_done=args.end_when_jobs_are_done)
+               end_when_jobs_are_done=args.end_when_jobs_are_done,
+               status_only=args.status_only)
 

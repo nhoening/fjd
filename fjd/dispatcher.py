@@ -70,6 +70,8 @@ class Dispatcher(CoreProcess):
                     do_work = False
                     if end_callback:
                         subprocess.call(end_callback, shell=True)
+            if status_only:
+                print()
 
         self.wrap_up()
 
