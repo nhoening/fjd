@@ -60,10 +60,10 @@ class Dispatcher(CoreProcess):
                                 '{wdir}/jobpod/{w}'.format(wdir=self.wdir, w=worker))
                         os.remove('{wdir}/workerqueue/{w}'.format(wdir=self.wdir, w=worker))
             elif len(jp) > 0:  # some jobs are still running
-                sys.stdout.write("\r[fjd-dispatcher] Queue is empty. Waiting for remaining {} job(s) to finish ...        ".format(len(jp)))
+                sys.stdout.write("\r[fjd-dispatcher] Job queue is empty. Waiting for remaining {} job(s) to finish ...        ".format(len(jp)))
                 sys.stdout.flush()
             else:  # all jobs are done
-                sys.stdout.write("\r[fjd-dispatcher] Queue is empty and all jobs have finished.                          ")
+                sys.stdout.write("\r[fjd-dispatcher] Job queue is empty and all jobs have finished.                          ")
                 sys.stdout.flush()
                 if end_when_jobs_are_done:
                     sys.stdout.write("\n")
