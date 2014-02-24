@@ -26,7 +26,8 @@ class Dispatcher(CoreProcess):
         self.wdir = ensure_wdir(project)
         self.start_up()
 
-        print('[fjd-dispatcher] Started on project "{}"'.format(project))
+        if not status_only:
+            print('[fjd-dispatcher] Started on project "{}"'.format(project))
 
         def signal_handler(signal, frame):
             ''' gently exiting, e.g. when CTRL-C was pressed.  '''
@@ -71,7 +72,7 @@ class Dispatcher(CoreProcess):
                     if end_callback:
                         subprocess.call(end_callback, shell=True)
             if status_only:
-                print()
+                print('')
 
         self.wrap_up()
 
