@@ -51,15 +51,15 @@ setup(
     license='Apache Software License',
     author='Nicolas Höning',
     tests_require=['pytest'],
-    install_requires=['screenutils>=0.0.1.5.4', 'paramiko>=1.7.7.1'],
     cmdclass={'test': PyTest},
+    install_requires=['screenutils>=0.0.1.5.4', 'paramiko>=1.7.7.1'],
     author_email='iam@nicolashoening.de',
     description='File-based job distribution for everyone',
     long_description=long_description,
     packages=['fjd'],
     include_package_data=True,
     platforms='Unix',
-    test_suite='fjd.test.test_fjd',
+    test_suite='fjd.tests.test_fjd',
     classifiers = [
         'Programming Language :: Python :: 2.7',
         'Development Status :: 4 - Beta',
@@ -72,9 +72,6 @@ setup(
         'Topic :: System :: Distributed Computing',
         'Topic :: Utilities',
         ],
-    extras_require={
-        'testing': ['pytest'],
-    },
     scripts = ['fjd/scripts/fjd-dispatcher', 'fjd/scripts/fjd-worker',
               'fjd/scripts/fjd-recruiter', 'fjd/scripts/bgscreen']
 )
