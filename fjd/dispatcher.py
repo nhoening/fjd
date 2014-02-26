@@ -24,7 +24,7 @@ class Dispatcher(CoreProcess):
         self.wdir = ensure_wdir(project)
         self.start_up()
 
-        print('[fjd-dispatcher] Started on project "{}"'.format(project))
+        print('[fjd-dispatcher] Started on project "{}".'.format(project))
 
         def signal_handler(signal, frame):
             ''' gently exiting, e.g. when CTRL-C was pressed.  '''
