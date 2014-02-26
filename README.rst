@@ -1,15 +1,14 @@
 fjd
 ===
 
-File-based distribution of jobs to CPUs on Unix-PCs.
+``fjd`` makes it easy to run computational jobs on many CPUs.
 
-There are powerful tools for automatic job distribution, but for smaller use cases,
-installation and maintenance effort is too high. In ``fjd``, the hurdle to install and use should be very low
-(assigning jobs works via files in your home directory). 
+There are several powerful tools for automatic distribution of computational jobs. However, for smaller use cases,
+the effort of installation and setup is too high.
 
-Jobs can be written in any language, ``fjd`` is only there to assign jobs to worker threads.
-Pull-model: idle workers get their next job from a queue.
-Works under the assumption that all CPUs are in a local network and can access a shared home directory.
+With ``fjd``, the hurdle to get started is very low. Installation is easy. Pushing jobs into the queue only requires writing small and simple files. Per default, all CPUs on your computer are used. New computers can be added very easily, too. Plus, your jobs can be written in any language.
+
+``fjd`` works under the assumption that all CPUs are in a local network and can access a shared home directory.
 
 
 Usage
@@ -89,8 +88,8 @@ is a shared home directory for logged-in users, which all machines can access. T
 in universities and companies.
 
 A little bit more detail about the ``fjd`` internals: 
-The ``fjd-recruiter`` creates worker threads on one or more machines. The ``fjd-worker`` processes announce themselves in the
-``workerqueue`` directory. The ``fjd-dispatcher`` finds your jobs in the ``jobqueue`` directory and pairs a job with an available worker.
+The ``fjd-recruiter`` creates worker threads on one or more machines (a worker thread is a Unix screen session, which remains even if you log out).
+The ``fjd-worker`` processes announce themselves in the ``workerqueue`` directory. The ``fjd-dispatcher`` finds your jobs in the ``jobqueue`` directory and pairs a job with an available worker.
 It then removes those entries from the ``jobqueue`` and ``workerqueue`` directories and creates a new entry in ``jobpods``, where workers will
 pick up their assignments.
 
