@@ -29,7 +29,7 @@ Usage
     [params]
     param1: value0
 
-  I'll talk about the details of these job files below and there is a full example as well. 
+  I'll talk about the details of these job files below and I'll also go through two full examples. 
 
 * Then, start a dispatcher::
 
@@ -74,30 +74,6 @@ from installing ``fjd`` on each machine you want to use.
 If they all share the home directory, they will all know about ``fjd`` once you are logged in. 
 
 
-How does fjd work, in a nutshell?
------------------------------------
-
-Small files in your home directory are used to indicate which jobs have to be done (these are created by you)
-and which workers are available (these are created automatically). Files are also used by ``fjd`` to assign workers
-to jobs.
-
-This simple file-based approach makes ``fjd`` very easy to use.
-
-For CPUs from several machines to work on your job queue, we make one necessary assumption: We assume that there 
-is a shared home directory for logged-in users, which all machines can access. This setting is very common now
-in universities and companies.
-
-A little bit more detail about the ``fjd`` internals: 
-The ``fjd-recruiter`` creates worker threads on one or more machines (a worker thread is a Unix screen session, which remains even if you log out).
-The ``fjd-worker`` processes announce themselves in the ``workerqueue`` directory. The ``fjd-dispatcher`` finds your jobs in the ``jobqueue`` directory and pairs a job with an available worker.
-It then removes those entries from the ``jobqueue`` and ``workerqueue`` directories and creates a new entry in ``jobpods``, where workers will
-pick up their assignments.
-
-Then, the dispatcher calls your executable script and passes the file that describes the job to it as parameter on the shell.
-Your script simply has to read the job file and act accordingly.
-
-All of these directories mentioned above exist in ``~/.fjd`` and will of course be created if they do not yet exist.
-
 
 Job files
 ------------
@@ -113,7 +89,7 @@ command to execute and where results should go. Here is an example::
     [params]
     param1: value0
 
-Your executable (the "job") gets this configuration file passed as a command line argument, so this would be called on the shell::
+Your executable script gets this configuration file passed as a command line argument, so this would be called on the shell::
 
     python example/ajob.py <absolute path to the job file>
 
@@ -179,7 +155,7 @@ Workers are Unix screen sessions, you can see them by typing::
 and inspect them if you want. As attaching to screen sessions is cumbersome
 and ``fjd`` can also close them before you have a chance to see what went wrong
 (this is an option you can set, see next example below),
-``fjd`` logs screen output to ``~/.fjd/<project>/screenlogs`` (each screen has
+``fjd`` logs screen output to ``~/.fjd/<project>/screenlogs`` (each worker has
 its own log file).
 
 Here is an example log from a screen session of a worker::
@@ -259,3 +235,28 @@ putting a public key in ~/.ssh/authorized_keys. For the shared-home directory
 setting we use ``fjd`` for, this makes a lot of sense, as you stay within your LAN anyway.
 In general, some SSH configuration can go a long way to ease your life,
 e.g. by connection sharing through the ControlAuto option. Search the web or ask your local IT guy.
+
+
+How does fjd work, in a nutshell?
+-----------------------------------
+
+Small files in your home directory are used to indicate which jobs have to be done (these are created by you)
+and which workers are available (these are created automatically). Files are also used by ``fjd`` to assign workers
+to jobs.
+
+This simple file-based approach makes ``fjd`` very easy to use.
+
+For CPUs from several machines to work on your job queue, we make one necessary assumption: We assume that there 
+is a shared home directory for logged-in users, which all machines can access. This setting is very common now
+in universities and companies.
+
+A little bit more detail about the ``fjd`` internals: 
+The ``fjd-recruiter`` creates worker threads on one or more machines (a worker thread is a Unix screen session, which remains even if you log out).
+The ``fjd-worker`` processes announce themselves in the ``workerqueue`` directory. The ``fjd-dispatcher`` finds your jobs in the ``jobqueue`` directory and pairs a job with an available worker.
+It then removes those entries from the ``jobqueue`` and ``workerqueue`` directories and creates a new entry in ``jobpods``, where workers will
+pick up their assignments.
+
+Then, the dispatcher calls your executable script and passes the file that describes the job to it as parameter on the shell.
+Your script simply has to read the job file and act accordingly.
+
+All of these directories mentioned above exist in ``~/.fjd`` and will of course be created if they do not yet exist.
