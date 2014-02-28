@@ -54,7 +54,7 @@ setup(
     cmdclass={'test': PyTest},
     install_requires=['screenutils>=0.0.1.5.4', 'paramiko>=1.7.7.1'],
     author_email='iam@nicolashoening.de',
-    description='File-based job distribution for everyone',
+    description='Job distribution for everyone',
     long_description=long_description,
     packages=['fjd'],
     include_package_data=True,
