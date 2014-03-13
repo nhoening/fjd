@@ -48,9 +48,11 @@ class Dispatcher(CoreProcess):
             jp = os.listdir('{}/jobpod'.format(self.wdir))
             wq = os.listdir('{}/workerqueue'.format(self.wdir))
             self.sort_jobqueue(jq)
+            num_workers = len(os.listdir('{}/screenrcs'.format(self.wdir)))
             if len(jq) > 0:  # more jobs waiting for workers
-                sys.stdout.write("\r[fjd-dispatcher] {} job(s) waiting in the queue. Currently {} worker(s) are free ...  "\
-                       .format(len(jq), len(wq)))
+                sys.stdout.write("\r[fjd-dispatcher] {} job(s) waiting in the queue."\
+                                 " Currently {} worker(s) out of {} are free ...  "\
+                       .format(len(jq), len(wq), num_workers))
                 sys.stdout.flush()
                 if not status_only:
                     for _ in range(min(len(jq), len(wq))):
