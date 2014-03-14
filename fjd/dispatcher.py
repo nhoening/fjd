@@ -51,7 +51,7 @@ class Dispatcher(CoreProcess):
             num_workers = len(os.listdir('{}/screenrcs'.format(self.wdir)))
             if len(jq) > 0:  # more jobs waiting for workers
                 sys.stdout.write("\r[fjd-dispatcher] {} job(s) waiting in the queue."\
-                                 " Currently {} worker(s) out of {} are free ...  "\
+                                 " Currently {} worker(s) out of {} are free ...                   "\
                        .format(len(jq), len(wq), num_workers))
                 sys.stdout.flush()
                 if not status_only:
@@ -65,7 +65,7 @@ class Dispatcher(CoreProcess):
                 sys.stdout.write("\r[fjd-dispatcher] Job queue is empty. Waiting for remaining {} job(s) to finish ...        ".format(len(jp)))
                 sys.stdout.flush()
             else:  # all jobs are done
-                sys.stdout.write("\r[fjd-dispatcher] Job queue is empty and all jobs have finished.                          ")
+                sys.stdout.write("\r[fjd-dispatcher] Job queue is empty and all jobs have finished.                                ")
                 sys.stdout.flush()
                 if end_when_jobs_are_done:
                     sys.stdout.write("\n")
