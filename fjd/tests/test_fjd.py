@@ -1,23 +1,44 @@
 import os
 import pytest
-#from subprocess import call
+from subprocess import call
 from shutil import rmtree
+
+import fjd
 
 
 class TestBasicExamples(object):
     '''
-    Run the basic examples and check ... 
+    Run the main command with some basic examples and check ... 
     '''
-    ex_dir = 'fjd/example'
+    files_dir = 'test-files'
     num_workers = 3
-
+    
     @pytest.fixture(scope='module')
-    def run_example(self):
-        fjd_dir = os.path.expanduser('~/.fjd/default')
-        rmtree('{}/screenlogs'.format(fjd_dir))
-        os.chdir(self.ex_dir)
-        call('./create_jobs.py', shell=True)
-        call('fjd-recruiter hire {}'.format(self.num_workers), shell=True)
-        call('fjd-dispatcher --end_when_jobs_are_done', shell=True)
+    def prepare(self):
+        if os.path.exists(self.files_dir):
+            rmtree(self.files_dir)
+        os.mkdir(self.files_dir)
+    
+    def test_noexe(self, prepare):
+        with pytest.raises(Exception):
+            fjd.Main(exe=None)
 
+    def test_instanceandparameters(self, prepare):
+        with pytest.raises(Exception):
+            fjd.Main(exe='ls', instances=3, parameters=(1,2,3))
 
+    def test_instances(self, prepare):
+        fjd.Main(exe='mktemp {}/tmp.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'\
+                     .format(self.files_dir), instances=10)     
+        assert(len(os.listdir(self.files_dir) == 10))
+
+    def test_parameters(self, prepare):
+        print(os.listdir('.'))
+        for i in xrange(10):
+            call('head -c 1048576 </dev/urandom >{}/bla{}.txt'\
+                 .format(self.files_dir, i))
+        fjd.Main(exe='gzip $1', parameters=list(range(10)))
+        # test that they are zipped
+        files = os.listdir(self.files_dir)
+        files.sort()
+        assert(files == ['bla{}.txt.gz'.format(i) for i in xrange(10)])

@@ -3,8 +3,10 @@ import pytest
 from subprocess import call
 from shutil import rmtree
 
+from fjd.utils import ensure_wdir, empty_queues
 
-class TestAdvancedExample(object):
+
+class QestAdvancedExample(object):
     '''
     Run the advanced example and check that joblogs and logfiles of example are there
     '''
@@ -14,9 +16,11 @@ class TestAdvancedExample(object):
     @pytest.fixture(scope='module')
     def run_example(self):
         fjd_dir = os.path.expanduser('~/.fjd/default')
-        rmtree('{}/screenlogs'.format(fjd_dir))
+        ensure_wdir()
+        empty_queues()
         os.chdir(self.ex_dir)
-        rmtree('logfiles')
+        if os.path.exists('logfiles'):
+            rmtree('logfiles')
         os.mkdir('logfiles')
         call('./create_jobs.py', shell=True)
         call('fjd-recruiter hire {}'.format(self.num_workers), shell=True)

@@ -13,8 +13,6 @@ if __name__ == '__main__':
     # first make sure the needed directories exists
     wdir = fjd.utils.ensure_wdir(project)
     fjd.utils.empty_queues(project)
-    if not os.path.exists('logfiles'):
-        os.mkdir('logfiles')
 
     # now put 10 jobs in the queue
     for i in range(10):

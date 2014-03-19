@@ -10,7 +10,7 @@ from fjd import Recruiter, Dispatcher
 
 class Main(CoreProcess):
 
-    def __init__(self, exe, instances=1, parameters=[], project=None, curdir):
+    def __init__(self, exe, instances=1, parameters=[], project=None, curdir=''):
         if not exe or exe == '':
             print('[fjd] Please specify an executable command.')
             sys.exit(2)
@@ -21,15 +21,15 @@ class Main(CoreProcess):
         self.wdir = ensure_wdir(project)
         if len(parameters) > 1:
             for i, p in enumerate(parameters):
-                with open('{}/jobqueue/job{}'.format(self.wdir, i)) as f:
+                with open('{}/jobqueue/job{}'.format(self.wdir, i), 'w') as f:
                     f.write('{} {}'.format(exe, ' '.join(parameters)))
         else:
-            for i, p in range(instances):
-                with open('{}/jobqueue/job{}'.format(self.wdir, i)) as f:
+            for i in range(instances):
+                with open('{}/jobqueue/job{}'.format(self.wdir, i), 'w') as f:
                     f.write(exe)
             
         recruiter = Recruiter(num_workers=max(1, cpu_count() - 1), project=project,
                               curdir=curdir)
         recruiter.hire()
-        Dispatcher(project=project, interval=args.interval)
+        Dispatcher(project=project)
 
