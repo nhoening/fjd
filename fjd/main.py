@@ -21,12 +21,21 @@ class Main(CoreProcess):
         self.wdir = ensure_wdir(project)
         if len(parameters) > 1:
             for i, p in enumerate(parameters):
-                with open('{}/jobqueue/job{}'.format(self.wdir, i), 'w') as f:
-                    f.write('{} {}'.format(exe, ' '.join(parameters)))
+                job = '{}/jobqueue/job{}'.format(self.wdir, i)
+                with open(job, 'w') as f:
+                    f.write('#!/bin/bash\n')
+                    if '$1' in exe:
+                        f.write(exe.replace('$1', str(p)))
+                    else:
+                        f.write('{exe} {param}'.format(exe=exe, param=p))
+                os.chmod(job, 0777)
         else:
             for i in range(instances):
-                with open('{}/jobqueue/job{}'.format(self.wdir, i), 'w') as f:
+                job = '{}/jobqueue/job{}'.format(self.wdir, i)
+                with open(job, 'w') as f:
+                    f.write('#!/bin/bash\n')
                     f.write(exe)
+                os.chmod(job, 0777)
             
         recruiter = Recruiter(num_workers=max(1, cpu_count() - 1), project=project,
                               curdir=curdir)

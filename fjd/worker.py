@@ -2,7 +2,7 @@
 
 import os
 import time
-from ConfigParser import ConfigParser
+from ConfigParser import ConfigParser, MissingSectionHeaderError, NoSectionError
 import subprocess
 from socket import gethostname
 
@@ -32,17 +32,19 @@ class Worker(CoreProcess):
             job = self.next_job_on_pod()
             if job:
                 print('[fjd-worker] Worker {}: I found a job.'.format(self.id))
-                #TODO: check if file IS a config file. If not, execute it.
-                #       If it is, get executable from there.
-                # A job is a config file
-                conf = ConfigParser() 
-                conf.read('{}/jobpod/{}'.format(self.wdir, job))
-                exe = conf.get('control', 'executable')
-                exe_log = conf.get('control', 'logfile')
-                # make log file and execute task
-                # TODO: why foes FJD need to touch a log file?
-                cmd = 'touch {log}; nice -n {nice} {exe} {wdir}/jobpod/{job}; '\
-                 .format(log=exe_log, nice=9, exe=exe, wdir=self.wdir, job=job)
+                # Check if file is a config file. If not, execute it.
+                # If it is, get executable from there.
+                conf = ConfigParser()
+                try: 
+                    conf.read('{}/jobpod/{}'.format(self.wdir, job))
+                    exe = conf.get('control', 'executable')
+                    exe_log = conf.get('control', 'logfile')
+                    # make log file and execute task
+                    # TODO: why foes FJD need to touch a log file?
+                    cmd = 'touch {log}; nice -n {nice} {exe} {wdir}/jobpod/{job}; '\
+                     .format(log=exe_log, nice=9, exe=exe, wdir=self.wdir, job=job)
+                except (MissingSectionHeaderError, NoSectionError):
+                    cmd = 'nice -n {nice} {wdir}/jobpod/{j}'.format(nice=9, wdir=self.wdir, j=job)
                 subprocess.call(cmd, shell=True)
                 print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))
                 # remove the job from pod (signaling it is done) + re-announce myself

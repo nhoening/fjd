@@ -25,7 +25,7 @@ def empty_queues(project='default'):
     '''
     Empty the queues - creates a blank state
     '''
-    if project == '':
+    if project == '' or not project:
         project = 'default'
     fjd_home = osp.expanduser('~/.fjd')
     if osp.exists(fjd_home):

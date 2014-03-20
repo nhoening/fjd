@@ -13,31 +13,31 @@ class TestBasicExamples(object):
     files_dir = 'test-files'
     num_workers = 3
     
-    @pytest.fixture(scope='module')
+    @pytest.fixture()
     def prepare(self):
         if os.path.exists(self.files_dir):
             rmtree(self.files_dir)
         os.mkdir(self.files_dir)
     
-    def test_noexe(self, prepare):
-        with pytest.raises(Exception):
+    def test_noexe(self):
+        with pytest.raises(SystemExit):
             fjd.Main(exe=None)
 
-    def test_instanceandparameters(self, prepare):
-        with pytest.raises(Exception):
+    def test_instanceandparameters(self):
+        with pytest.raises(SystemExit):
             fjd.Main(exe='ls', instances=3, parameters=(1,2,3))
 
     def test_instances(self, prepare):
         fjd.Main(exe='mktemp {}/tmp.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'\
                      .format(self.files_dir), instances=10)     
-        assert(len(os.listdir(self.files_dir) == 10))
+        assert(len(os.listdir(self.files_dir)) == 10)
 
     def test_parameters(self, prepare):
-        print(os.listdir('.'))
         for i in xrange(10):
-            call('head -c 1048576 </dev/urandom >{}/bla{}.txt'\
-                 .format(self.files_dir, i))
-        fjd.Main(exe='gzip $1', parameters=list(range(10)))
+            call('head -c 102400 </dev/urandom >{}/bla{}.txt'\
+                 .format(self.files_dir, i), shell=True)
+        fjd.Main(exe='cd {}; gzip bla$1.txt'.format(self.files_dir),
+                 parameters=range(10))
         # test that they are zipped
         files = os.listdir(self.files_dir)
         files.sort()

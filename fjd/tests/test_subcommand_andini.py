@@ -6,7 +6,7 @@ from shutil import rmtree
 from fjd.utils import ensure_wdir, empty_queues
 
 
-class QestAdvancedExample(object):
+class TestAdvancedExample(object):
     '''
     Run the advanced example and check that joblogs and logfiles of example are there
     '''
