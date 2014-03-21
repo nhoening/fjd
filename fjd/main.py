@@ -12,10 +12,10 @@ class Main(CoreProcess):
 
     def __init__(self, exe, instances=1, parameters=[], project=None, curdir=''):
         if not exe or exe == '':
-            print('[fjd] Please specify an executable command.')
+            print('[fjd] Please specify an executable command (--exe).')
             sys.exit(2)
         if instances > 1 and len(parameters) > 0:
-            print('[fjd] Only one of instances and parameters can be set at a time.')
+            print('[fjd] Only one of --instances and --parameters can be set at a time.')
             sys.exit(2)
         empty_queues(project=project)
         self.wdir = ensure_wdir(project)
@@ -36,8 +36,9 @@ class Main(CoreProcess):
                     f.write('#!/bin/bash\n')
                     f.write(exe)
                 os.chmod(job, 0777)
-            
-        recruiter = Recruiter(num_workers=max(1, cpu_count() - 1), project=project,
+
+        num_workers = min(instances, max(1, cpu_count() - 1))
+        recruiter = Recruiter(num_workers=num_workers, project=project,
                               curdir=curdir)
         recruiter.hire()
         Dispatcher(project=project)

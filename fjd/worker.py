@@ -2,7 +2,8 @@
 
 import os
 import time
-from ConfigParser import ConfigParser, MissingSectionHeaderError, NoSectionError
+import StringIO
+from ConfigParser import RawConfigParser, MissingSectionHeaderError, NoSectionError
 import subprocess
 from socket import gethostname
 
@@ -32,19 +33,23 @@ class Worker(CoreProcess):
             job = self.next_job_on_pod()
             if job:
                 print('[fjd-worker] Worker {}: I found a job.'.format(self.id))
-                # Check if file is a config file. If not, execute it.
-                # If it is, get executable from there.
-                conf = ConfigParser()
-                try: 
-                    conf.read('{}/jobpod/{}'.format(self.wdir, job))
-                    exe = conf.get('control', 'executable')
-                    exe_log = conf.get('control', 'logfile')
-                    # make log file and execute task
-                    # TODO: why foes FJD need to touch a log file?
-                    cmd = 'touch {log}; nice -n {nice} {exe} {wdir}/jobpod/{job}; '\
-                     .format(log=exe_log, nice=9, exe=exe, wdir=self.wdir, job=job)
+                # Check if job file is a config file (ini-style).
+                # If it is, get executable from there, call it and pass it the config file.
+                # If it is not, run the job file as a script.
+
+                # We read the file first and close it, so no stale handles will exists
+                # in case ConfigParser exits
+                with open('{}/jobpod/{}'.format(self.wdir, job), 'r') as jobfile:
+                    jobtxt = jobfile.read()
+                conf = RawConfigParser()
+                ini_fp = StringIO.StringIO(jobtxt)
+                try:
+                    conf.readfp(ini_fp)  # this raises in case it is not an .ini file
+                    exe = conf.get('fjd', 'executable')
+                    cmd = 'nice -n {nice} {exe} {wdir}/jobpod/{job}; '\
+                     .format(nice=9, exe=exe, wdir=self.wdir, job=job)
                 except (MissingSectionHeaderError, NoSectionError):
-                    cmd = 'nice -n {nice} {wdir}/jobpod/{j}'.format(nice=9, wdir=self.wdir, j=job)
+                    cmd = 'nice -n {nice} {wdir}/jobpod/{job}'.format(nice=9, wdir=self.wdir, job=job)
                 subprocess.call(cmd, shell=True)
                 print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))
                 # remove the job from pod (signaling it is done) + re-announce myself

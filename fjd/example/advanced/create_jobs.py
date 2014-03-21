@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import sys
-import os
-
 import fjd
 
 
@@ -16,12 +14,12 @@ if __name__ == '__main__':
 
     # now put 10 jobs in the queue
     for i in range(10):
-        jobconf = '''[control]
+        jobconf = '''[fjd]
 executable: python ajob.py
-logfile: logfiles/job{i}.dat 
 
 [params]
-param1:value{i}'''.format(i=i)
+logfile: logfiles/job{i}.dat 
+my_param: value{i}'''.format(i=i)
         f = open('{}/jobqueue/{i}.conf'.format(wdir, i=i), 'w')
         f.write(jobconf)
         f.close() 
