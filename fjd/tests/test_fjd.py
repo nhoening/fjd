@@ -39,6 +39,12 @@ class TestBasicExamples(object):
         assert(len(os.listdir(self.files_dir)) == 10)
 
     def test_parameters(self, clean_slate):
+        call("fjd --project {} --exe 'touch {}/bla$1.dat' --parameters 1,2,3"\
+                .format(self.project, self.files_dir), shell=True)
+        for i in range(1, 4, 1):
+            assert(os.path.exists('{}/bla{}.dat'.format(self.files_dir, i)))
+
+    def test_parameters_code(self, clean_slate):
         for i in xrange(10):
             call('head -c 102400 </dev/urandom >{}/bla{}.txt'\
                  .format(self.files_dir, i), shell=True)
@@ -48,3 +54,17 @@ class TestBasicExamples(object):
         files = os.listdir(self.files_dir)
         files.sort()
         assert(files == ['bla{}.txt.gz'.format(i) for i in xrange(10)])
+
+    def test_multiple_parameters_code(self, clean_slate):
+        for i in xrange(10):
+            call('head -c 102400 </dev/urandom >{}/bla{}.txt'\
+                 .format(self.files_dir, i), shell=True)
+        p = ['{}#{}'.format(i, l) for i,l in zip(range(10), 'abcdefghij')]
+        fjd.Main(exe='cd {}; gzip bla$1.txt; mv bla$1.txt.gz bla$1$2.txt.gz'.format(self.files_dir),
+                 parameters=p, project=self.project)
+        # test that they are zipped
+        files = os.listdir(self.files_dir)
+        files.sort()
+        assert(files == ['bla{}{}.txt.gz'.format(i,l) for i,l in zip(xrange(10), 'abcdefghij')])
+
+

@@ -24,10 +24,18 @@ class Main(CoreProcess):
                 job = '{}/jobqueue/job{}'.format(self.wdir, i)
                 with open(job, 'w') as f:
                     f.write('#!/bin/bash\n')
-                    if '$1' in exe:
-                        f.write(exe.replace('$1', str(p)))
-                    else:
-                        f.write('{exe} {param}'.format(exe=exe, param=p))
+                    cur_exe = exe
+                    ext_params = []
+                    for j, param in enumerate(str(p).split('#')):
+                        print j+1, param, cur_exe
+                        if '${}'.format(j+1) in cur_exe:
+                            print 'replacing'
+                            cur_exe = cur_exe.replace('${}'.format(j+1), str(param))
+                        else:
+                            print 'not replacing'
+                            ext_params.append(str(p))
+                    print cur_exe
+                    f.write('{exe} {params}'.format(exe=cur_exe, params=' '.join(ext_params)))
                 os.chmod(job, 0777)
         else:
             for i in range(instances):
@@ -37,7 +45,7 @@ class Main(CoreProcess):
                     f.write(exe)
                 os.chmod(job, 0777)
 
-        num_workers = min(instances, max(1, cpu_count() - 1))
+        num_workers = min(instances, cpu_count())
         recruiter = Recruiter(num_workers=num_workers, project=project,
                               curdir=curdir)
         recruiter.hire()
