@@ -3,10 +3,10 @@ fjd
 
 ``fjd`` makes it easy to run computational jobs on many CPUs.
 
-There are several powerful tools for automatic distribution of computational jobs. However, for smaller use cases,
-the effort of installation and setup is too high.
+There are several powerful tools for dispatching dynamic lists of computational jobs to multiple, possibly distributed CPUs. However, for simple use cases, the effort of installation and setup is often too high.
 
-With ``fjd``, the hurdle to get started is very low. Installation is easy. Pushing jobs into the queue only requires writing small and simple files. Per default, all CPUs on your computer are used. New computers can be added very easily, too. Plus, your jobs can be written in any language.
+
+With ``fjd``, the hurdle to get started is very low. Installation is easy. Pushing jobs into the queue only requires to put an executable script in a directory. Per default, all CPUs on your computer are used. New computers can be added very easily, too. Plus, your jobs can be written in any language.
 
 ``fjd`` works under the assumption that all CPUs are in a local network and can access a shared home directory.
 
@@ -14,31 +14,42 @@ With ``fjd``, the hurdle to get started is very low. Installation is easy. Pushi
 Usage
 -------
 
-* Start one or more ``fjd-worker`` threads, like this::
+You can call ``fjd`` directly::
+
+    $ fjd --exe "mktemp XXX.tmp" --instances 4
+
+This example creates four temporary files with random names. Each of the four job will be done by one CPU (if you have that many).
+
+You can also supply a list with parameters::
+
+    $ fjd --exe 'touch bla$1.txt' --parameters 1,2,3,4
+
+This will create four files: ``bla1.txt, bla2.txt, bla3.txt, bla4.txt``.
+Here, ``fjd`` will select itself how many CPUs on your machine it should use.
+Note that if you use the placeholder ``$1``, use single quotes aorund the ``--exe`` command.
+
+To use several computers, you can configure a number of hosts in your network and how many CPUs should be 
+running on each (see an example of this below).
+
+``fjd`` can also be controlled in more detail. For instance, you can first start one or more ``fjd-worker`` threads, like this::
 
     $ fjd-recruiter hire [<number of workers>]
 
-  Per default, this starts n-1 worker threads, where n is the number of CPUs on your machine. 
+Per default, this starts n-1 worker threads, where n is the number of CPUs on your machine. 
 
-* Put jobs in the job queue. You do this by putting a configuration file per job in a designated directory (e.g. ``~/.fjd/default/jobqueue``, where 'default' could be changed to a specific project name). Here is an example job::
+Now you can put jobs in the job queue. You do this by putting a file per job in a designated directory (e.g. ``~/.fjd/default/jobqueue``, where 'default' could be changed to a specific project name). Here is an example job, simply a bash file which ``fjd`` will run::
 
-    [control]
-    executable: python example/ajob.py
-    logfile: logfiles/job0.dat 
+    #!/bin/bash
+    ./do_something
+    ./do_something_else
 
-    [params]
-    param1: value0
-
-  I'll talk about the details of these job files below and I'll also go through two full examples. 
-
-* Then, start a dispatcher::
+Then, start a dispatcher::
 
     $ fjd-dispatcher
 
-Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy.
+Now the ``fjd-dispatcher`` assigns jobs to ``fjd-worker`` threads who are currently not busy, until the job queue is empty.
 
-You can configure a number of hosts in your network and how many workers should be 
-running on each (see an example of this below).
+After I discuss installation, I'll show more examples that make use of ``fjd``'s configuration possibilities.
 
 
 Installation
@@ -82,28 +93,27 @@ A job file should adhere to the general `INI-file standard <http://en.wikipedia.
 ``fjd`` only has some requirements for the ``control`` section, in which you specify which
 command to execute and where results should go. Here is an example::
 
-    [control]
+    [fjd]
     executable: python example/ajob.py
-    logfile: logfiles/job0.dat 
 
     [params]
-    param1: value0
+    logfile: logfiles/job0.dat 
+    my_param: value0
 
 Your executable script gets this configuration file passed as a command line argument, so this would be called on the shell::
 
     python example/ajob.py <absolute path to the job file>
 
-This way, it can see for itself in which logfile to write to.
 In addition, you can put other job-specific configuration in there for the executable
-to see, as I did here in the ``[params]``-section (I repeat: only the ``[control]``-section
+to see, as I did here in the ``[params]``-section (I repeat: only the ``[fjd]``-section
 is required by ``fjd``).
 
-Take care to get the relative paths correct (or simply make them absolute):
-If the paths are relative, they should be relative to the directory in which you
+Take care to get relative paths correct (or simply make them absolute):
+If paths are relative, they should be relative to the directory in which you
 start the ``fjd-dispatcher``.
 
 To add this job to the job queue, we would place that file into ``~/.fjd/default/jobqueue``
-and the ``fjd-dispatcher`` will find it there. 
+and the ``fjd-dispatcher`` will find it there.
 
 **Note** You can specify a project name (example below) and then "default" would be replaced by that.
 
@@ -237,8 +247,20 @@ In general, some SSH configuration can go a long way to ease your life,
 e.g. by connection sharing through the ControlAuto option. Search the web or ask your local IT guy.
 
 
-How does fjd work, in a nutshell?
------------------------------------
+
+FAQ
+------------------------------------
+
+* I know a simple tool with comparable features: Gnu Parallel? What can ``fjd`` do better?:
+
+    First off, Gnu Parallel is awesome, but sadly not known enough. I found out about it just recently. ``fjd`` is better at managing a dynamic queue, more demanding use cases (e.g. cluster environments, optimisation, many parameters). ``fjd`` is usable in Python programs. workers can be inspected live. TODO: formulate whoel sentences.
+
+* Can I pass more than one parameter per job with the ``--paramters`` option?:
+
+    Yes. Separate items in lists per job with ``#``, e.g. ``--parameters "'--my_param#1'"`` or ``--exe 'cp $1 $2' --parameters "a.txt#bckp/a.txt,b.txt#bckp/b.txt"``.
+    If your ``--exe`` parameter contains the $-index (e.g. ``--exe 'echo $1' --parameters 'Hello!,Bye!'``), then the parameter will replace it (i.e. ``$1`` becomes ``Hello!`` for one job and ``Bye!`` for the second.
+
+* How does ``fjd`` work, in a nutshell?:
 
 Small files in your home directory are used to indicate which jobs have to be done (these are created by you)
 and which workers are available (these are created automatically). Files are also used by ``fjd`` to assign workers
@@ -260,3 +282,5 @@ Then, the dispatcher calls your executable script and passes the file that descr
 Your script simply has to read the job file and act accordingly.
 
 All of these directories mentioned above exist in ``~/.fjd`` and will of course be created if they do not yet exist.
+
+
