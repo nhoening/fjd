@@ -218,21 +218,17 @@ FAQ
 ------------------------------------
 
 I know an existing simple tool with comparable features: `Gnu Parallel <http://www.gnu.org/software/parallel>`_. What can ``fjd`` do better?
-
     First off, Gnu Parallel is awesome, probably should be more popular. I found out about it just recently. It fits into the Unix workflow perfectly. I think that ``fjd`` is better at few things, though: First, managing a dynamic job queue is possible, which enables more demanding use cases (e.g. distributed computing in cluster environments, or optimisation procedures which update the queue dynamically with the next set of solutions to evaluate). Second, jobs with many parameters can be nicely described in config files, which I feel is quite convenient sometimes. Finally, whicle Gnu Parallel fits Uniy admins like a glove, maybe ``fjd`` fits more into programmers' workflows, especially of course Python programmers as you can call `fjd``'s features from within Python programs.
 
 Can I pass more than one parameter per job with the ``--parameters`` option?
-
     Yes. Separate items in lists per job with ``#``, e.g. ``--parameters "'--my_param#1'"`` or ``--exe 'cp $1 $2' --parameters "a.txt#bckp/a.txt,b.txt#bckp/b.txt"``.
     If your ``--exe`` parameter contains the $-index (e.g. ``--exe 'echo $1' --parameters 'Hello!,Bye!'``), then the parameter will replace it (i.e. ``$1`` becomes ``Hello!`` for one job and ``Bye!`` for the second.
 
 How would I use ``fjd`` on a computation cluster?
-
     I use ``fjd`` to great effect on a PBS cluster (a system many of them use). The computation nodes on this system all have access to a shread home directory, so ``fjd`` can work well there. All I do is fill the job queue and for each computation node I order, I issue a ``fjd-recruiter hire X`` command, where ``X`` is the number of cores that node has.
     For illustration, I have `an example script <https://raw.github.com/nhoening/fjd/master/fjd/example/runbrute.sh>`_, which I use to run >600K small jobs (In order to run a brute-force benchmark). 
 
 How does ``fjd`` work, in a nutshell?
-
     Small files in your home directory are used to indicate which jobs have to be done (these are created by you) and which workers are available (these are created automatically). Files are also used by ``fjd`` to assign workers to jobs.
 
     This simple file-based approach makes ``fjd`` very easy to use.
