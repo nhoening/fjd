@@ -24,18 +24,18 @@ class TestBasicExamples(object):
         with pytest.raises(SystemExit):
             fjd.Main(exe=None)
 
-    def test_instanceandparameters(self):
+    def test_repeat_and_parameters(self):
         with pytest.raises(SystemExit):
-            fjd.Main(exe='ls', instances=3, parameters=(1,2,3))
+            fjd.Main(exe='ls', repeat=3, parameters=(1,2,3))
 
     def test_simple_cmd(self, clean_slate):
         call('fjd --project {} --exe "touch {}/simpletest.tmp"'\
                 .format(self.project, self.files_dir), shell=True)
         assert(os.path.exists('{}/simpletest.tmp'.format(self.files_dir)))
 
-    def test_instances(self, clean_slate):
+    def test_repeat(self, clean_slate):
         fjd.Main(project=self.project, exe='mktemp {}/tmp.XXXXXXXXXXXXXXXXXXXXXXXXXX'\
-                     .format(self.files_dir), instances=10)
+                     .format(self.files_dir), repeat=10)
         assert(len(os.listdir(self.files_dir)) == 10)
 
     def test_parameters(self, clean_slate):

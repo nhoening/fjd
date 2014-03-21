@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import argparse
+from multiprocessing import cpu_count
 
 from fjd import Main
 
@@ -8,14 +9,16 @@ from fjd import Main
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Use FJDStart a worker process.')
     parser.add_argument('--exe', type=str, help="The path to executable script") 
-    parser.add_argument('--instances', type=int, default=1,
-                        help="Number of instances to start. The default is one. "\
-                             "You can also list hosts in remote.conf.")
+    parser.add_argument('--repeat', type=int, default=1,
+                        help="How often to repeat the --exe command. The default is one.")
     parser.add_argument('--parameters', type=str, default='',
-                        help="List (comma-separated) of parameters to send to executable. "\
-                             "Enclose several parameters per call like this: a#b,c#d.")
+                        help="List (comma-separated) of parameters. "\
+                             "The executable command will be called once for each entry. "\
+                             "Encode several parameters per call like this: a#b,c#d.")
     parser.add_argument('--project', type=str, help="Custom identifier (useful"\
                                   "when FJD is used to run several projects).")
+    parser.add_argument('num_workers', type=int, nargs='?', default=max(1, cpu_count() - 1),
+                         help="How many workers are needed. Default is number of local CPUs minus one.")
     parser.add_argument('--curdir', type=str, help="Current directory workers should cd into before starting.")
 
     args = parser.parse_args()
@@ -24,6 +27,6 @@ if __name__ == '__main__':
         params = [p.strip() for p in args.parameters.split(',')]
     else:
         params = []
-    Main(exe=args.exe, instances=args.instances, parameters=params,
+    Main(exe=args.exe, repeat=args.repeat, parameters=params,
          project=args.project, curdir=args.curdir)
 
