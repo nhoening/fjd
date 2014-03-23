@@ -226,7 +226,7 @@ Can I pass more than one parameter per job with the ``--parameters`` option?
 
 How would I use ``fjd`` on a computation cluster?
     I use ``fjd`` to great effect on a PBS cluster (a system many of them use). The computation nodes on this system all have access to a shread home directory, so ``fjd`` can work well there. All I do is fill the job queue and for each computation node I order, I issue a ``fjd-recruiter hire X`` command, where ``X`` is the number of cores that node has.
-    For illustration, I have `an example script <https://raw.github.com/nhoening/fjd/master/fjd/example/runbrute.sh>`_, which I use to run >600K small jobs (In order to run a brute-force benchmark). 
+    For illustration, I have `an example script <https://raw.github.com/nhoening/fjd/master/fjd/example/runbrute.py>`_, which I use to run >600K small jobs (In order to run a brute-force benchmark). 
 
 How does ``fjd`` work, in a nutshell?
     Small files in your home directory are used to indicate which jobs have to be done (these are created by you) and which workers are available (these are created automatically). Files are also used by ``fjd`` to assign workers to jobs.

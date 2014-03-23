@@ -7,6 +7,7 @@ I make parameter configurations from four shuffled lists and let one job run 100
 '''
 
 import sys
+import os
 import itertools
 import numpy as np
 import random
@@ -15,8 +16,8 @@ from fjd import Dispatcher
 from fjd.utils import ensure_wdir, empty_queues
 
 # clean up
-call('rm pbsjobs/job*', shell=True)
-call('rm brute.log; touch brute.log', shell=True)
+call('rm pbsjobs/pbsjob*', shell=True)
+call('rm brute*.log;', shell=True)
 ensure_wdir(project='brute')
 empty_queues(project='brute')
 
@@ -27,16 +28,15 @@ for node in xrange(1, 11, 1):
 # request 1 node, 8 cores
 #PBS -lnodes=1:cores8
 # job requires at most n hours wallclock time
-#PBS -lwalltime=16:00:00
+#PBS -lwalltime=08:00:00
 
 cd /home/nicolas/brute
 fjd-recruiter --project brute hire 8
 python -c "import time; time.sleep(16*60*60)"  # keep PBS job alive
 '''
-    with open("pbsjobs/job{}".format(node), 'w') as f:
+    with open("pbsjobs/pbsjob{}".format(node), 'w') as f:
         f.write(pbsjob)
-    call('qsub pbsjobs/job{}'.format(node), shell=True)
-
+    call('qsub pbsjobs/pbsjob{}'.format(node), shell=True)
 
 # fill jobqueue
 cpus = 80
@@ -63,7 +63,12 @@ for jobid, job in enumerate(jobs):
         f.write('#!/bin/bash\n')
         f.write('cd /home/nicolas/brute\n')
         batchid += 1
-    f.write('brute.py {x0} {x1} {x2} {mp}\n'.format(x0=job[0], x1=job[1], x2=job[2], mp=job[3]))
+    f.write('brutus.py {bi} {x0} {x1} {x2} {mp}\n'\
+        .format(bi=batchid, x0=job[0], x1=job[1], x2=job[2], mp=job[3]))
 
-Dispatcher(project='brute')
+for f in os.listdir("/home/nicolas/.fjd/brute/jobqueue"):
+    os.chmod("/home/nicolas/.fjd/brute/jobqueue/{}".format(f), 0777)
+
+    merge_logs = 'cat {} > brute.log'.format(' '.join(['brute'+str(bi)+'.log' for bi in range(batchid + 1)]))
+Dispatcher(project='brute', end_callback=merge_logs)
 
