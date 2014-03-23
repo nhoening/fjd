@@ -15,9 +15,8 @@ if __name__ == '__main__':
                          " before quitting.")
     parser.add_argument('--status_only', action='store_true',
                     help="Only display state of jobs and then quit.")
-
     parser.add_argument('--project', type=str, help="Custom identifier (useful"\
-                                  " when fjd is used to run several projects).")
+                                  " when FJD is used to run several projects).")
     args = parser.parse_args()
     Dispatcher(project=args.project, interval=args.interval,
                end_when_jobs_are_done=args.end_when_jobs_are_done,

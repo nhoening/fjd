@@ -72,7 +72,7 @@ setup(
         'Topic :: System :: Distributed Computing',
         'Topic :: Utilities',
         ],
-    scripts = ['fjd/scripts/fjd-dispatcher', 'fjd/scripts/fjd-worker',
+    scripts = ['fjd/scripts/fjd', 'fjd/scripts/fjd-dispatcher', 'fjd/scripts/fjd-worker',
               'fjd/scripts/fjd-recruiter', 'fjd/scripts/bgscreen']
 )
 
