@@ -10,7 +10,8 @@ from fjd import Recruiter, Dispatcher
 
 class Main(CoreProcess):
 
-    def __init__(self, exe, repeat=1, parameters=[], project=None, num_workers=0, curdir=''):
+    def __init__(self, exe, repeat=1, parameters=[], project=None, num_workers=0,
+                callback=None, curdir=''):
         if not exe or exe == '':
             print('[fjd] Please specify an executable command (--exe).')
             sys.exit(2)
@@ -47,5 +48,5 @@ class Main(CoreProcess):
         recruiter = Recruiter(num_workers=num_workers, project=project,
                               curdir=curdir)
         recruiter.hire()
-        Dispatcher(project=project)
+        Dispatcher(project=project, callback=callback)
 

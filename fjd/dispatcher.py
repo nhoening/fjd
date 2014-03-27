@@ -4,6 +4,7 @@ import sys
 import os
 import time
 import signal
+import types
 import subprocess
 
 from fjd import CoreProcess
@@ -20,7 +21,7 @@ class Dispatcher(CoreProcess):
     '''
 
     def __init__(self, interval=.1, project=None, end_when_jobs_are_done=True,
-                 end_callback=None, status_only=False):
+                 callback=None, status_only=False):
         if not project:
             project = 'default'
         self.wdir = ensure_wdir(project)
@@ -71,8 +72,13 @@ class Dispatcher(CoreProcess):
                     sys.stdout.write("\n")
                     Recruiter(project=project).fire()
                     do_work = False
-                    if end_callback:
-                        subprocess.call(end_callback, shell=True)
+                    if callback:
+                        if isinstance(callback, types.FunctionType):
+                            callback()
+                        elif isinstance(callback, str):
+                            subprocess.call(callback, shell=True)
+                        else:
+                            print('[fjd-dispatcher] Cannot use callback function, as it is neither function nor string, but {}'.format(type(callback)))
             if status_only:
                 print('')
 
