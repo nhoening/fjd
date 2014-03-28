@@ -19,6 +19,7 @@ if __name__ == '__main__':
                                   "when FJD is used to run several projects).")
     parser.add_argument('num_workers', type=int, nargs='?', default=max(1, cpu_count() - 1),
                          help="How many workers are needed. Default is number of local CPUs minus one.")
+    parser.add_argument('--callback', type=str, help="A command to execute when all jobs are done.")
     parser.add_argument('--curdir', type=str, help="Current directory workers should cd into before starting.")
 
     args = parser.parse_args()
@@ -28,5 +29,5 @@ if __name__ == '__main__':
     else:
         params = []
     Main(exe=args.exe, repeat=args.repeat, parameters=params,
-         project=args.project, curdir=args.curdir)
+         project=args.project, callback=args.callback, curdir=args.curdir)
 

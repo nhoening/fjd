@@ -67,4 +67,14 @@ class TestBasicExamples(object):
         files.sort()
         assert(files == ['bla{}{}.txt.gz'.format(i,l) for i,l in zip(xrange(10), 'abcdefghij')])
 
+    def test_callback_str(self):
+        fjd.Main(exe='echo BLA', repeat=3, callback='touch {}/cb_str'.format(self.files_dir))
+        assert(os.path.exists('{}/cb_str'.format(self.files_dir)))
+
+    def test_callback_func(self):
+        def touch_cb2():
+            call('touch {}/cb_func'.format(self.files_dir), shell=True)
+        fjd.Main(exe='echo BLA', repeat=3, callback=touch_cb2)
+        assert(os.path.exists('{}/cb_func'.format(self.files_dir)))
+
 
