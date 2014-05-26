@@ -47,8 +47,9 @@ class Worker(CoreProcess):
                     conf.readfp(ini_fp)  # this raises in case it is not an .ini file
                     exe = conf.get('fjd', 'executable')
                     cmd = 'nice -n {nice} {exe} {wdir}/jobpod/{job}; '\
-                     .format(nice=9, exe=exe, wdir=self.wdir, job=job)
-                except (MissingSectionHeaderError, NoSectionError):
+                          .format(nice=9, exe=exe, wdir=self.wdir, job=job)
+                    #except (MissingSectionHeaderError, NoSectionError):
+                except (MissingSectionHeaderError):
                     cmd = 'nice -n {nice} {wdir}/jobpod/{job}'.format(nice=9, wdir=self.wdir, job=job)
                 subprocess.call(cmd, shell=True)
                 print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))

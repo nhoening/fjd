@@ -8,7 +8,7 @@ import fjd
 
 class TestBasicExamples(object):
     '''
-    Run the main command with some basic examples and check ... 
+    Run the main command with some basic examples.
     '''
     files_dir = 'test-files'
     num_workers = 3
@@ -76,5 +76,4 @@ class TestBasicExamples(object):
             call('touch {}/cb_func'.format(self.files_dir), shell=True)
         fjd.Main(exe='echo BLA', repeat=3, callback=touch_cb2)
         assert(os.path.exists('{}/cb_func'.format(self.files_dir)))
-
 

@@ -9,7 +9,10 @@ from fjd import Recruiter, Dispatcher
 
 
 class Main(CoreProcess):
-
+    '''
+    Translates --exe, --repeat and --parameters options into job files, then starts
+    Recruiter and Dispatcher.
+    '''
     def __init__(self, exe, repeat=1, parameters=[], project=None, num_workers=0,
                 callback=None, curdir=''):
         if not exe or exe == '':
