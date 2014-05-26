@@ -80,7 +80,7 @@ def mk_ssh_client(hostname, username):
             print("[fjd-ssh] Authentication was not successful.")
             ssh_client = None
         except Exception, e:
-            print("[fjd-ssh] WARNING: Error while connecting with host {}: {}".format((hostname, e)))
+            print("[fjd-ssh] WARNING: Error while connecting with host {}: {}".format(hostname, e))
             ssh_client = None
     return ssh_client
 
