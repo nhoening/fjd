@@ -12,6 +12,10 @@ from fjd import Recruiter
 from fjd.utils import ensure_wdir
 
 
+if sys.version < '3':
+    input = raw_input
+
+
 class Dispatcher(CoreProcess):
     '''
     Directory and File-based work dispatcher.
