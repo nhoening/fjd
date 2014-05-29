@@ -35,7 +35,7 @@ class Dispatcher(CoreProcess):
             sys.stdout.write('\n[fjd-dispatcher] Received Exit signal. Exiting ...\n')
             print('[fjd-dispatcher] Should I fire all workers in project {}? [y|N]'\
                         .format(project))
-            if raw_input().lower() in ["y", "yes"]:
+            if input().lower() in ["y", "yes"]:
                 Recruiter(project=project).fire()
             sys.exit(0)
         signal.signal(signal.SIGINT, signal_handler)

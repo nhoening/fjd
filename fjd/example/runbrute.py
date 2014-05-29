@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 This is a simple example of using fjd to run >600K jobs on a PBS
 computation cluster.
@@ -22,7 +20,7 @@ ensure_wdir(project='brute')
 empty_queues(project='brute')
 
 # start 80 workers on 10 PBS nodes (8 on each)
-for node in xrange(1, 11, 1):
+for node in range(1, 11, 1):
     pbsjob = '''# Shell for the job:
 #PBS -S /bin/bash
 # request 1 node, 8 cores
@@ -67,7 +65,7 @@ for jobid, job in enumerate(jobs):
         .format(bi=batchid, x0=job[0], x1=job[1], x2=job[2], mp=job[3]))
 
 for f in os.listdir("/home/nicolas/.fjd/brute/jobqueue"):
-    os.chmod("/home/nicolas/.fjd/brute/jobqueue/{}".format(f), 0777)
+    os.chmod("/home/nicolas/.fjd/brute/jobqueue/{}".format(f), 0o777)
 
     merge_logs = 'cat {} > brute.log'.format(' '.join(['brute'+str(bi)+'.log' for bi in range(batchid + 1)]))
 Dispatcher(project='brute', end_callback=merge_logs)

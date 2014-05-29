@@ -7,7 +7,11 @@ from getpass import getuser
 import subprocess
 from socket import gethostname
 from screenutils import list_screens #, Screen
-from ConfigParser import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser  # for py2
+
 import signal
 
 from fjd.sshtools import mk_ssh_client, ssh
@@ -31,7 +35,7 @@ class Recruiter(object):
         rc_loc = "{}/remote.conf".format(self.wdir)
         if osp.exists(rc_loc) and not local_only:
             self.hosts = []
-            remote_conf = ConfigParser()
+            remote_conf = configparser.ConfigParser()
             remote_conf.read(rc_loc)
             num_hosts = 0
             while remote_conf.has_section('host{}'.format(num_hosts + 1)):

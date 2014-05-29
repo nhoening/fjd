@@ -42,7 +42,7 @@ class TestAdvancedExample(object):
         assert(os.path.exists('logfiles'))
         data = os.listdir('logfiles')
         data.sort()
-        assert(data == ['job' + str(i) + '.dat' for i in xrange(10)])
+        assert(data == ['job' + str(i) + '.dat' for i in range(10)])
         for i in range(10):
             with open('logfiles/job' + str(i) + '.dat', 'r') as lf:
                 assert('This was done with parameter my_param:value{val}.'.format(val=i) in lf.read())

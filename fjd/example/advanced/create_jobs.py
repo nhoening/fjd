@@ -21,4 +21,4 @@ python ajob.py value{} {}
         f = open('{}/jobqueue/job{i}'.format(wdir, i=i), 'w')
         f.write(job)
         f.close() 
-        os.chmod('{}/jobqueue/job{i}'.format(wdir, i=i), 0777)
+        os.chmod('{}/jobqueue/job{i}'.format(wdir, i=i), 0o777)

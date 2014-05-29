@@ -62,6 +62,7 @@ setup(
     test_suite='fjd.tests.test_fjd',
     classifiers = [
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
         'Development Status :: 4 - Beta',
         'Natural Language :: English',
         'Environment :: Console',
