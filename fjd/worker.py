@@ -1,9 +1,13 @@
 #!/usr/bin/python
 
 import os
+import sys
 import time
-import StringIO
-from ConfigParser import RawConfigParser, MissingSectionHeaderError, NoSectionError
+import io
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser  # for py2
 import subprocess
 from socket import gethostname
 
@@ -41,15 +45,17 @@ class Worker(CoreProcess):
                 # in case ConfigParser exits
                 with open('{}/jobpod/{}'.format(self.wdir, job), 'r') as jobfile:
                     jobtxt = jobfile.read()
-                conf = RawConfigParser()
-                ini_fp = StringIO.StringIO(jobtxt)
+                    if sys.version < '3':
+                        jobtxt = unicode(jobtxt)
+                ini_fp = io.StringIO(jobtxt)
+                conf = configparser.RawConfigParser()
                 try:
                     conf.readfp(ini_fp)  # this raises in case it is not an .ini file
                     exe = conf.get('fjd', 'executable')
                     cmd = 'nice -n {nice} {exe} {wdir}/jobpod/{job}; '\
                           .format(nice=9, exe=exe, wdir=self.wdir, job=job)
-                    #except (MissingSectionHeaderError, NoSectionError):
-                except (MissingSectionHeaderError):
+                    #except (configparser.MissingSectionHeaderError, configparser.NoSectionError):
+                except (configparser.MissingSectionHeaderError):
                     cmd = 'nice -n {nice} {wdir}/jobpod/{job}'.format(nice=9, wdir=self.wdir, job=job)
                 subprocess.call(cmd, shell=True)
                 print('[fjd-worker] Worker {}: Finished my job.'.format(self.id))

@@ -52,7 +52,7 @@ setup(
     author='Nicolas Höning',
     tests_require=['pytest'],
     cmdclass={'test': PyTest},
-    install_requires=['screenutils>=0.0.1.5.4', 'paramiko>=1.7.7.1'],
+    install_requires=['screenutils>=0.0.1.5.4', 'paramiko>=1.13'],
     author_email='iam@nicolashoening.de',
     description='Job distribution for everyone',
     long_description=long_description,
@@ -62,6 +62,7 @@ setup(
     test_suite='fjd.tests.test_fjd',
     classifiers = [
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
         'Development Status :: 4 - Beta',
         'Natural Language :: English',
         'Environment :: Console',

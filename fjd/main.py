@@ -36,14 +36,14 @@ class Main(CoreProcess):
                         else:
                             ext_params.append(str(p))
                     f.write('{exe} {params}'.format(exe=cur_exe, params=' '.join(ext_params)))
-                os.chmod(job, 0777)
+                os.chmod(job, 0o777)
         else:
             for i in range(repeat):
                 job = '{}/jobqueue/job{}'.format(self.wdir, i)
                 with open(job, 'w') as f:
                     f.write('#!/bin/bash\n')
                     f.write(exe)
-                os.chmod(job, 0777)
+                os.chmod(job, 0o777)
 
         if num_workers == 0:
             num_workers = cpu_count() - 1
