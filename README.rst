@@ -222,11 +222,11 @@ I know an existing simple tool with comparable features: `Gnu Parallel <http://w
     In addition, ``fjd`` has one interesting feature to offer: the queue of jobs can be sorted on the fly, which can be useful for some use cases where it is important to always perform the job first which is most likely to lead to positive outcomes (e.g. in an optimisation context). 
  
 Can I pass more than one parameter per job with the ``--parameters`` option?
-    Yes. Separate items in lists per job with ``#``, e.g. ``--parameters "'--my_param#1'"`` or ``--exe 'cp $1 $2' --parameters "a.txt#bckp/a.txt,b.txt#bckp/b.txt"``.
+    Yes. Separate items in lists per job with ``#``, e.g. ``--parameters "'param1#param2'"`` or ``--exe 'cp $1 $2' --parameters "a.txt#bckp/a.txt,b.txt#bckp/b.txt"``.
     If your ``--exe`` parameter contains the $-index (e.g. ``--exe 'echo $1' --parameters 'Hello!,Bye!'``), then the parameter will replace it (i.e. ``$1`` becomes ``Hello!`` for one job and ``Bye!`` for the second.
 
 How would I use ``fjd`` on a computation cluster?
-    I use ``fjd`` to great effect on a PBS cluster (a system many of them use). The computation nodes on this system all have access to a shread home directory, so ``fjd`` can work well there. All I do is fill the job queue and for each computation node I order, I issue a ``fjd-recruiter hire X`` command, where ``X`` is the number of cores that node has.
+    I use ``fjd`` to great effect on a PBS cluster (a scheduling system many computation clusters are running). The computation nodes on this system all have access to a shared home directory, so ``fjd`` can work well there. All I do is fill the job queue in my local directory and for each computation node I order (via PBS), I issue a ``fjd-recruiter hire X`` command, where ``X`` is the number of cores that the requested node has.
     For illustration, I have `an example script <https://raw.github.com/nhoening/fjd/master/fjd/example/runbrute.py>`_, which I use to run >600K small jobs (In order to run a brute-force benchmark). 
 
 How does ``fjd`` work, in a nutshell?
