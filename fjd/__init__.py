@@ -4,4 +4,4 @@ from .worker import Worker
 from .dispatcher import Dispatcher
 from .main import Main
 
-__version__ = '0.1.57'
+__version__ = '0.1.58'
