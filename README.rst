@@ -83,7 +83,7 @@ If you do not have enough privileges (look for something like "Permission denied
 
     $ pip install fjd --user
 
-If you do not have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_, which should help to install all needed things. Download it and make it executable::
+If you do not have ``pip`` installed (I can't wait for everyone running Python 3.4), I made a `small script <https://raw.githubusercontent.com/nhoening/fjd/master/fjd/scripts/INSTALL>`_, which should help to install all needed things. Download it and make it executable::
 
     $ wget https://raw.github.com/nhoening/fjd/master/fjd/scripts/INSTALL
     $ chmod +x INSTALL
@@ -121,7 +121,7 @@ directory. Here is an example::
     name: hyuga.sen.cwi.nl
     workers: 5
 
-There is an `advanced example <https://raw.github.com/nhoening/fjd/master/fjd/example/advanced>`_
+There is an `advanced example <https://raw.githubusercontent.com/nhoening/fjd/master/fjd/example/advanced>`_
 in the github repo which you can run and inspect. Use the scripts ``run-example.sh`` or 
 ``run-remote-example.sh`` to execute.
 
@@ -209,7 +209,7 @@ Take care to get relative paths correct (or simply make them absolute):
 If paths are relative, they should be relative to the directory in which you
 start the ``fjd-dispatcher``.
 
-The `advanced example <https://raw.github.com/nhoening/fjd/master/fjd/example/advanced>`_ also shows how this works.
+The `advanced example <https://raw.githubiusercontent.com/nhoening/fjd/master/fjd/example/advanced>`_ also shows how this works.
 You can use the script ``run-config-example.sh`` to run it.
 
 
@@ -227,7 +227,7 @@ Can I pass more than one parameter per job with the ``--parameters`` option?
 
 How would I use ``fjd`` on a computation cluster?
     I use ``fjd`` to great effect on a PBS cluster (a scheduling system many computation clusters are running). The computation nodes on this system all have access to a shared home directory, so ``fjd`` can work well there. All I do is fill the job queue in my local directory and for each computation node I order (via PBS), I issue a ``fjd-recruiter hire X`` command, where ``X`` is the number of cores that the requested node has.
-    For illustration, I have `an example script <https://raw.github.com/nhoening/fjd/master/fjd/example/runbrute.py>`_, which I use to run >600K small jobs (In order to run a brute-force benchmark). 
+    For illustration, I have `an example script <https://raw.githubusercontent.com/nhoening/fjd/master/fjd/example/runbrute.py>`_, which I use to run >600K small jobs (In order to run a brute-force benchmark). 
 
 How does ``fjd`` work, in a nutshell?
     Small files in your home directory are used to indicate which jobs have to be done (these are created by you) and which workers are available (these are created automatically). Files are also used by ``fjd`` to assign workers to jobs.
